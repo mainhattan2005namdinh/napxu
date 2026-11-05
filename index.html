@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="vi-VN" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>XuLive — Nạp Xu & Quà tặng Livestream</title>
+    <meta name="description" content="XuLive — nền tảng mua và nạp Xu để gửi quà tặng trong livestream. Nhanh, an toàn, giá tốt.">
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%2325F4EE'/%3E%3Cstop offset='1' stop-color='%23FE2C55'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='32' height='32' rx='8' fill='url(%23g)'/%3E%3Ctext x='16' y='22' font-size='16' font-weight='bold' text-anchor='middle' fill='white' font-family='Arial'%3EX%3C/text%3E%3C/svg%3E">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        cyan: '#25F4EE',
+                        rose: '#FE2C55',
+                        ink: '#121212'
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        :root { --cyan:#25F4EE; --rose:#FE2C55; }
+        html { scroll-behavior: smooth; }
+
+        .brand-gradient { background: linear-gradient(135deg, var(--cyan) 0%, var(--rose) 100%); }
+        .text-gradient {
+            background: linear-gradient(135deg, var(--cyan) 0%, var(--rose) 100%);
+            -webkit-background-clip: text; background-clip: text; color: transparent;
+        }
+
+        /* Logo gốc (không dùng thương hiệu bên thứ ba) */
+        .logo-mark {
+            width: 38px; height: 38px; border-radius: 11px;
+            display: inline-flex; align-items: center; justify-content: center;
+            font-weight: 900; color: #fff; font-size: 20px;
+            box-shadow: 0 6px 18px rgba(254,44,85,.35);
+        }
+
+        .coin-icon { background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%); }
+
+        /* Marquee */
+        .marquee-wrap { overflow: hidden; }
+        .marquee { display: inline-block; white-space: nowrap; animation: marquee 18s linear infinite; }
+        @keyframes marquee { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
+
+        .card-hover { transition: transform .2s ease, box-shadow .2s ease; }
+        .card-hover:hover { transform: translateY(-4px); box-shadow: 0 14px 34px rgba(0,0,0,.10); }
+
+        .fade-in { opacity: 0; transform: translateY(16px); transition: opacity .6s ease, transform .6s ease; }
+        .fade-in.show { opacity: 1; transform: none; }
+
+        /* Hero glow (phong cách TikTok: nền tối + vệt sáng cyan/hồng) */
+        .hero-glow {
+            position: absolute; inset: 0; pointer-events: none;
+            background:
+                radial-gradient(60% 60% at 15% 10%, rgba(37,244,238,.22) 0%, transparent 60%),
+                radial-gradient(55% 55% at 90% 90%, rgba(254,44,85,.25) 0%, transparent 60%);
+        }
+
+        [x-cloak] { display: none !important; }
+    </style>
+</head>
+<body class="bg-[#F6F7F9] text-ink font-sans antialiased min-h-screen flex flex-col">
+
+    <!-- Header -->
+    <header class="bg-white/90 backdrop-blur border-b border-gray-100 sticky top-0 z-40">
+        <div class="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
+            <a href="#top" class="flex items-center space-x-2">
+                <img src="tiktok-sign-logo.png" alt="Logo" class="h-9 w-9 object-contain rounded-xl">
+                <span class="hidden sm:inline text-2xl font-black tracking-tight">Xu<span class="text-gradient">Live</span></span>
+            </a>
+
+            <nav class="hidden md:flex items-center space-x-7 text-sm font-semibold text-gray-600">
+                <a href="#video" class="hover:text-rose transition">Video</a>
+                <a href="#packages" class="hover:text-rose transition">Gói nạp</a>
+            </nav>
+
+            <div class="flex items-center gap-2">
+                <button onclick="openNoticeModal()" class="relative bg-gray-100 hover:bg-gray-200 text-gray-700 w-10 h-10 rounded-full flex items-center justify-center transition" title="Lưu ý quan trọng">
+                    <i class="fa-solid fa-bell text-rose"></i>
+                    <span class="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 bg-rose rounded-full animate-ping"></span>
+                    <span class="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 bg-rose rounded-full"></span>
+                </button>
+                <!-- Ô nhập ID TikTok -->
+                <div class="flex items-center bg-gray-100 border border-gray-200 rounded-lg px-2 py-1 gap-1 focus-within:border-[#FE2C55] transition">
+                    <span class="text-gray-400 text-sm pl-1">@</span>
+                    <input type="text" id="tiktok-id-input" placeholder="Nhập ID TikTok của bạn"
+                        class="bg-transparent text-sm focus:outline-none w-28 sm:w-40 text-gray-800 placeholder:text-gray-400">
+                    <button onclick="loginTikTok()" class="text-white font-semibold text-sm px-3 py-1.5 rounded-md transition hover:opacity-90 whitespace-nowrap" style="background:#FE2C55;">
+                        Đăng nhập
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Marquee -->
+        <div class="brand-gradient text-white text-sm py-1.5 marquee-wrap">
+            <div class="marquee">
+                🎁 Ưu đãi hôm nay: nạp từ 100.000đ tặng thêm 5% Xu &nbsp;•&nbsp; ⚡ Cộng Xu tự động trong vài giây &nbsp;•&nbsp; 🔒 Thanh toán an toàn &nbsp;•&nbsp; 💬 Hỗ trợ 24/7
+            </div>
+        </div>
+    </header>
+
+    <main id="top" class="flex-1">
+        <div class="max-w-6xl mx-auto px-4 py-5">
+
+            <!-- Ticker thông báo full width -->
+            <div class="flex items-center gap-3 bg-[#FFF0F3] border border-[#FE2C55]/20 rounded-xl px-3 py-2.5 mb-5 overflow-hidden">
+                <span class="w-7 h-7 rounded-full flex-shrink-0 flex items-center justify-center text-white text-xs" style="background:#FE2C55;">
+                    <i class="fa-solid fa-bell"></i>
+                </span>
+                <div class="marquee-wrap flex-1 overflow-hidden">
+                    <span class="marquee text-sm text-gray-700">
+                        vklanh*** đã nạp thành công 2.000 Xu trị giá 523.000đ <span style="color:#FE2C55;">(Vừa xong)</span> &nbsp;•&nbsp; huyenngoc752*** đã nạp 5.000 Xu &nbsp;•&nbsp; long***2k đã nạp 10.000 Xu &nbsp;•&nbsp; minhkhanh*** đã nạp 1.000 Xu &nbsp;•&nbsp; thanhly***8 đã nạp 50.000 Xu
+                    </span>
+                </div>
+            </div>
+
+            <!-- 2 cột desktop -->
+            <div class="flex flex-col lg:flex-row gap-5 items-start">
+
+                <!-- CỘT TRÁI: Gói nạp -->
+                <div class="flex-1 min-w-0" id="packages">
+                    <h2 class="text-xl font-black tracking-tight mb-1">Nhận Xu</h2>
+                    <p class="text-xs mb-4" style="color:#FE2C55;">
+                        Nạp: Tiết kiệm khoảng 35% với phí dịch vụ của bên thứ ba thấp hơn.
+                    </p>
+
+                    <!-- Grid gói -->
+                    <div id="package-grid" class="grid grid-cols-2 sm:grid-cols-4 gap-3"></div>
+
+                    <!-- Chi tiết đơn hàng -->
+                    <div class="mt-5 bg-white rounded-2xl shadow-sm overflow-hidden">
+                        <div class="px-5 py-4">
+                            <p class="font-bold text-base">Chi tiết đơn hàng</p>
+                        </div>
+                        <div class="border-t border-gray-100 px-5 py-3.5 flex items-center justify-between">
+                            <span class="text-sm text-gray-500">Số Xu đã chọn:</span>
+                            <span id="order-xu" class="text-sm font-semibold text-gray-900">—</span>
+                        </div>
+                        <div class="border-t border-gray-100 px-5 py-3.5 flex items-center justify-between">
+                            <span class="text-sm text-gray-500">Tổng tiền thanh toán:</span>
+                            <span id="order-price" class="text-base font-black" style="color:#FE2C55;">—</span>
+                        </div>
+                        <div class="px-5 pb-5 pt-3">
+                            <button onclick="checkout()" class="w-full text-white font-bold py-4 rounded-xl text-base tracking-wide hover:opacity-90 transition" style="background:#FE2C55;">
+                                Nạp
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- CỘT PHẢI: Video -->
+                <div class="w-full lg:w-[340px] flex-shrink-0" id="video">
+                    <h2 class="text-base font-black tracking-tight mb-3 flex items-center gap-2">
+                        <i class="fa-solid fa-play-circle" style="color:#FE2C55;"></i> Hướng dẫn nạp xu
+                    </h2>
+                    <div class="rounded-2xl overflow-hidden shadow-lg bg-white p-2.5">
+                        <div class="aspect-[9/16] rounded-xl overflow-hidden">
+                            <video class="w-full h-full object-cover" controls autoplay muted loop playsinline>
+                                <source src="https://napxu.top/uploads/file_1792780189288.mp4" type="video/mp4">
+                            </video>
+                        </div>
+                    </div>
+                    <!-- Hỗ trợ Zalo -->
+                    <div class="mt-4 text-center">
+                        <p class="text-gray-500 text-sm mb-2"><i class="fa-solid fa-bolt text-yellow-400 mr-1"></i>Cần hỗ trợ trực tiếp?</p>
+                        <a href="https://zalo.me" target="_blank" rel="noopener"
+                            class="inline-flex items-center gap-2 text-white font-bold px-6 py-3 rounded-full shadow-md transition hover:opacity-90 w-full justify-center" style="background:#0068FF;">
+                            <img src="Icon_of_Zalo.svg.webp" alt="Zalo" class="w-5 h-5 object-contain brightness-0 invert">
+                            Chat Zalo Hỗ trợ
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-gray-100 py-4 text-center text-xs text-gray-500 font-semibold tracking-wide">
+        © HỖ TRỢ LIÊN HỆ SỐ ĐIỆN THOẠI ZALO : 0568441367
+    </footer>
+
+    <!-- Notice Modal -->
+    <div id="notice-modal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-black/50">
+        <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-xl">
+            <div class="flex items-start justify-between mb-3">
+                <h3 class="text-lg font-bold flex items-center gap-2"><i class="fa-solid fa-circle-info text-rose"></i> Lưu ý</h3>
+                <button onclick="closeNoticeModal()" class="text-gray-400 hover:text-gray-700"><i class="fa-solid fa-xmark text-xl"></i></button>
+            </div>
+            <p class="text-sm text-gray-600 leading-relaxed">
+                Đây là trang <b>demo giao diện</b>. Mọi gói Xu, giá và giao dịch chỉ mang tính minh họa,
+                không thực hiện thanh toán thật và không thu thập thông tin tài khoản của bạn.
+            </p>
+            <button onclick="closeNoticeModal()" class="mt-5 w-full brand-gradient text-white font-semibold py-2.5 rounded-xl hover:opacity-90 transition">Đã hiểu</button>
+        </div>
+    </div>
+
+    <!-- Nút nổi góc phải -->
+    <div class="fixed right-4 bottom-4 z-50 flex flex-col items-end gap-2">
+        <!-- Hộp quà -->
+        <button onclick="openNoticeModal()" title="Ưu đãi / Quà tặng"
+            class="relative w-14 h-14 rounded-full brand-gradient text-white shadow-lg flex items-center justify-center hover:scale-105 transition">
+            <i class="fa-solid fa-gift text-xl"></i>
+            <span class="absolute -top-1 -right-1 bg-white text-rose text-[10px] font-black px-1.5 py-0.5 rounded-full shadow">HOT</span>
+            <span class="absolute inset-0 rounded-full brand-gradient animate-ping opacity-30"></span>
+        </button>
+        <!-- Zalo -->
+        <a href="https://zalo.me" target="_blank" rel="noopener" title="Liên hệ Zalo"
+            class="w-14 h-14 rounded-full bg-white shadow-lg flex items-center justify-center hover:scale-105 transition ring-1 ring-gray-200">
+            <img src="Icon_of_Zalo.svg.webp" alt="Zalo" class="w-9 h-9 object-contain">
+        </a>
+        <!-- Lịch sử vòng quay -->
+        <button onclick="showToast('Tính năng lịch sử vòng quay sắp ra mắt!')"
+            class="flex items-center gap-2 bg-white border border-gray-200 shadow-lg rounded-full px-3 py-2.5 sm:px-4 text-sm font-semibold text-gray-700 hover:shadow-xl transition hover:border-[#FE2C55] hover:text-[#FE2C55]">
+            <i class="fa-solid fa-clock-rotate-left text-[#FE2C55]"></i>
+            <span class="hidden sm:inline">Lịch sử vòng quay</span>
+        </button>
+    </div>
+
+    <!-- Toast -->
+    <div id="toast" class="fixed bottom-5 left-1/2 -translate-x-1/2 z-50 hidden">
+        <div class="bg-ink text-white text-sm px-4 py-2.5 rounded-xl shadow-lg flex items-center gap-2">
+            <i class="fa-solid fa-circle-check text-cyan"></i> <span id="toast-msg"></span>
+        </div>
+    </div>
+
+    <script>
+        // ---- Data ----
+        const packages = [
+            { xu: 1000,  price: '261.000 đ',   popular: false },
+            { xu: 2000,  price: '520.000 đ',   popular: false },
+            { xu: 3000,  price: '779.000 đ',   popular: false },
+            { xu: 5000,  price: '1.297.000 đ', popular: true  },
+            { xu: 10000, price: '2.592.000 đ', popular: false },
+            { xu: 20000, price: '5.182.000 đ', popular: false },
+            { xu: 50000, price: '12.952.000 đ',popular: false },
+        ];
+
+        // ---- Render packages ----
+        let selected = null;
+        const grid = document.getElementById('package-grid');
+
+        packages.forEach((p, i) => {
+            const el = document.createElement('button');
+            el.className = 'relative text-left bg-white rounded-2xl p-4 shadow-sm border-2 border-transparent focus:outline-none transition hover:shadow-md';
+            el.dataset.i = i;
+            el.innerHTML = `
+                ${p.popular ? '<span class="absolute -top-2 right-2 bg-[#FE2C55] text-white text-[10px] font-bold px-2 py-0.5 rounded-full whitespace-nowrap shadow">Phổ biến 🔥</span>' : ''}
+                <div class="flex items-center gap-2 mb-2">
+                    <span class="inline-flex items-center justify-center w-7 h-7 rounded-full text-white text-xs font-black shadow-sm" style="background:linear-gradient(135deg,#FFD700,#FFA500);">đ</span>
+                    <span class="text-base font-black text-gray-900">${p.xu.toLocaleString('vi-VN')} Xu</span>
+                </div>
+                <p class="text-sm text-gray-400">${p.price}</p>
+            `;
+            el.onclick = () => selectPackage(i, el);
+            grid.appendChild(el);
+        });
+
+        // Thêm ô Tùy chỉnh
+        const custom = document.createElement('div');
+        custom.className = 'relative text-left bg-white rounded-2xl p-4 shadow-sm border-2 border-transparent transition hover:shadow-md cursor-pointer';
+        custom.id = 'custom-card';
+        custom.innerHTML = `
+            <div class="flex items-center gap-2 mb-1">
+                <span class="inline-flex items-center justify-center w-7 h-7 rounded-full text-white text-xs shadow-sm" style="background:linear-gradient(135deg,#25F4EE,#00bcd4);">
+                    <i class="fa-solid fa-sliders text-[11px]"></i>
+                </span>
+                <span class="text-base font-black text-gray-900">Tùy chỉnh</span>
+            </div>
+            <p class="text-xs" style="color:#25c4c4;">1.000 - 2.000.000 Xu</p>
+            <div id="custom-input-wrap" class="hidden mt-3">
+                <input id="custom-xu-input" type="number" min="1000" max="2000000" step="1000"
+                    placeholder="Từ 1.000 - 2.000.000"
+                    class="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-[#FE2C55] text-gray-700 placeholder:text-gray-300"
+                    onclick="event.stopPropagation()"
+                    oninput="onCustomInput(this.value)">
+            </div>
+        `;
+        custom.onclick = () => selectCustom();
+        grid.appendChild(custom);
+
+        function selectCustom() {
+            selected = 'custom';
+            document.querySelectorAll('#package-grid button').forEach(b => { b.style.borderColor = 'transparent'; });
+            document.getElementById('custom-card').style.borderColor = '#FE2C55';
+            document.getElementById('custom-input-wrap').classList.remove('hidden');
+            const val = document.getElementById('custom-xu-input').value;
+            if (val) onCustomInput(val);
+            else {
+                document.getElementById('order-xu').textContent = '—';
+                document.getElementById('order-price').textContent = '—';
+            }
+            setTimeout(() => document.getElementById('custom-xu-input').focus(), 50);
+        }
+
+        function onCustomInput(val) {
+            const xu = parseInt(val);
+            if (!xu || xu < 1000) return;
+            selected = 'custom';
+            document.getElementById('custom-card').style.borderColor = '#FE2C55';
+            // Giá tạm tính: ~259đ/xu
+            const price = Math.round(xu * 259);
+            document.getElementById('order-xu').textContent = `${xu.toLocaleString('vi-VN')} XU`;
+            document.getElementById('order-price').textContent = price.toLocaleString('vi-VN') + ' đ';
+        }
+
+        function selectPackage(i, el) {
+            selected = i;
+            document.querySelectorAll('#package-grid button').forEach(b => { b.style.borderColor = 'transparent'; });
+            document.getElementById('custom-card').style.borderColor = 'transparent';
+            document.getElementById('custom-input-wrap').classList.add('hidden');
+            el.style.borderColor = '#FE2C55';
+            const p = packages[i];
+            document.getElementById('order-xu').textContent = `${p.xu.toLocaleString('vi-VN')} XU`;
+            document.getElementById('order-price').textContent = p.price;
+        }
+
+        // Mặc định chọn gói đầu tiên (1.000 Xu)
+        window.addEventListener('DOMContentLoaded', () => {
+            const firstBtn = document.querySelector('#package-grid button');
+            if (firstBtn) firstBtn.click();
+        });
+
+        function checkout() {
+            if (selected === null) { showToast('Vui lòng chọn một gói Xu trước.'); return; }
+            if (selected === 'custom') {
+                const val = parseInt(document.getElementById('custom-xu-input').value);
+                if (!val || val < 1000) { showToast('Nhập số Xu từ 1.000 trở lên.'); return; }
+                showToast(`Đã chọn ${val.toLocaleString('vi-VN')} Xu tùy chỉnh.`);
+                return;
+            }
+            const p = packages[selected];
+            showToast(`Đã chọn ${p.xu.toLocaleString('vi-VN')} Xu — ${p.price}`);
+        }
+
+
+        // ---- Đăng nhập TikTok ID ----
+        function loginTikTok() {
+            const val = document.getElementById('tiktok-id-input').value.trim();
+            if (!val) { showToast('Vui lòng nhập ID TikTok của bạn.'); return; }
+            showToast('Đang kiểm tra tài khoản @' + val + '...');
+        }
+
+        // ---- Modal ----
+        function openNoticeModal() { const m = document.getElementById('notice-modal'); m.classList.remove('hidden'); m.classList.add('flex'); }
+        function closeNoticeModal() { const m = document.getElementById('notice-modal'); m.classList.add('hidden'); m.classList.remove('flex'); }
+
+        // ---- Toast ----
+        let toastTimer;
+        function showToast(msg) {
+            const t = document.getElementById('toast');
+            document.getElementById('toast-msg').textContent = msg;
+            t.classList.remove('hidden');
+            clearTimeout(toastTimer);
+            toastTimer = setTimeout(() => t.classList.add('hidden'), 2600);
+        }
+
+        // ---- Reveal on scroll ----
+        const io = new IntersectionObserver((entries) => {
+            entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('show'); io.unobserve(e.target); } });
+        }, { threshold: .15 });
+        document.querySelectorAll('.fade-in').forEach(el => io.observe(el));
+    </script>
+</body>
+</html>
