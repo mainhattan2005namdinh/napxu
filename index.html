@@ -6,7 +6,7 @@
     <meta name="theme-color" content="#0A0A0F">
     <title>XuLive — Nạp Xu & Quà tặng Livestream</title>
     <meta name="description" content="XuLive — nền tảng mua và nạp Xu để gửi quà tặng trong livestream. Nhanh, an toàn, giá tốt.">
-    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%2325F4EE'/%3E%3Cstop offset='1' stop-color='%23FE2C55'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='32' height='32' rx='8' fill='url(%23g)'/%3E%3Ctext x='16' y='22' font-size='16' font-weight='bold' text-anchor='middle' fill='white' font-family='Arial'%3EX%3C/text%3E%3C/svg%3E">
+    <link rel="icon" href="logotiktok2.png">
 
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -230,11 +230,17 @@
     <header class="sticky top-0 z-40 bg-[#0A0A0F]/75 backdrop-blur-xl border-b border-white/[.06]">
         <div class="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between gap-3">
             <a href="#top" class="flex items-center gap-2.5 flex-shrink-0 group">
-                <img src="tiktok-sign-logo.png" alt="Logo" class="logo-glow h-9 w-9 object-contain rounded-xl transition group-hover:scale-105">
+                <img src="logotiktok2.png" alt="Logo" class="logo-glow h-9 w-9 object-contain rounded-xl transition group-hover:scale-105">
                 <span class="hidden sm:inline text-[26px] font-black tracking-tight leading-none">Xu<span class="text-gradient">Live</span></span>
             </a>
 
             <div class="flex items-center gap-2 sm:gap-2.5 min-w-0">
+                <!-- Nút QR desktop -->
+                <button onclick="openQRModal()" title="Quét mã QR TikTok"
+                    class="hidden sm:flex flex-shrink-0 items-center gap-2 bg-white/[.06] hover:bg-white/[.12] border border-white/10 hover:border-white/20 h-10 px-3.5 rounded-full transition group">
+                    <i class="fa-solid fa-qrcode text-[15px]" style="background:linear-gradient(135deg,#25F4EE,#FE2C55);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;"></i>
+                    <span class="text-[13px] font-semibold text-white/80 group-hover:text-white whitespace-nowrap">Mở quét mã QR xác thực TikTok</span>
+                </button>
                 <button onclick="openNoticeModal()" class="relative flex-shrink-0 bg-white/[.06] hover:bg-white/[.12] border border-white/10 w-10 h-10 rounded-full flex items-center justify-center transition" title="Lưu ý quan trọng">
                     <i class="fa-solid fa-bell text-rose"></i>
                     <span class="absolute top-0 right-0 w-2.5 h-2.5 bg-rose rounded-full animate-ping"></span>
@@ -312,6 +318,17 @@
                 <p id="zalo-edit-note" class="text-xs italic text-white/40 mt-2"></p>
             </div>
 
+            <!-- Nút quét QR TikTok (chỉ hiện mobile, desktop nằm trong header) -->
+            <div class="fade-in mb-4 sm:hidden">
+                <button onclick="openQRModal()" class="w-full flex items-center justify-center gap-3 bg-gradient-to-r from-[#25F4EE]/15 to-[#FE2C55]/15 hover:from-[#25F4EE]/25 hover:to-[#FE2C55]/25 border border-white/15 hover:border-white/30 rounded-2xl px-5 py-3.5 transition group">
+                    <span class="flex-shrink-0 w-9 h-9 rounded-xl bg-gradient-to-br from-[#25F4EE]/20 to-[#FE2C55]/20 ring-1 ring-white/15 flex items-center justify-center">
+                        <i class="fa-solid fa-qrcode text-[18px] text-gradient" style="background:linear-gradient(135deg,#25F4EE,#FE2C55);-webkit-background-clip:text;-webkit-text-fill-color:transparent;"></i>
+                    </span>
+                    <span class="font-bold text-[15px] sm:text-base text-white group-hover:text-white/90">Mở quét mã QR xác thực TikTok</span>
+                    <i class="fa-solid fa-chevron-right text-white/30 text-xs ml-auto group-hover:translate-x-1 transition-transform"></i>
+                </button>
+            </div>
+
             <!-- Ticker thông báo full width -->
             <div class="fade-in flex items-center gap-3 glass rounded-2xl pl-2.5 pr-3 py-2 mb-6 overflow-hidden">
                 <span class="live-dot w-8 h-8 rounded-full flex-shrink-0 flex items-center justify-center text-white text-xs bg-rose shadow-[0_0_18px_rgba(254,44,85,.6)]">
@@ -385,7 +402,7 @@
                             </button>
                             <p class="mt-4 text-center text-sm text-white/50">
                                 <i class="fa-solid fa-bolt text-yellow-400 mr-1"></i>Cần hỗ trợ trực tiếp?
-                                <a href="https://zalo.me" target="_blank" rel="noopener" class="inline-flex items-center gap-1 font-bold text-[#60A5FA] hover:text-[#93C5FD] hover:underline ml-1">
+                                <a href="https://zalo.me/0823717126" target="_blank" rel="noopener" class="inline-flex items-center gap-1 font-bold text-[#60A5FA] hover:text-[#93C5FD] hover:underline ml-1">
                                     <img src="Icon_of_Zalo.svg.webp" alt="Zalo" class="w-4 h-4 object-contain">Chat Zalo hỗ trợ
                                 </a>
                             </p>
@@ -399,7 +416,7 @@
     <!-- Footer -->
     <footer class="relative mt-10 border-t border-white/[.06] bg-black/30 py-5 pl-4 pr-[84px] sm:px-4 text-center text-xs text-white/45 font-semibold tracking-wide">
         <div class="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/15 to-transparent"></div>
-        © HỖ TRỢ LIÊN HỆ SỐ ĐIỆN THOẠI ZALO : <span class="text-white/70">0568441367</span>
+        © HỖ TRỢ LIÊN HỆ SỐ ĐIỆN THOẠI ZALO : <span class="text-white/70">0823.717.126</span>
     </footer>
 
     <!-- Notice Modal -->
@@ -439,9 +456,9 @@
                 <div class="rounded-2xl px-4 py-3.5 flex items-center justify-between gap-3 border bg-blue-500/10 border-blue-400/25">
                     <div class="min-w-0">
                         <p class="font-bold text-[#BFDBFE]">Liên hệ hỗ trợ qua Zalo:</p>
-                        <p class="text-base sm:text-lg font-black text-[#60A5FA]">0568441367</p>
+                        <p class="text-base sm:text-lg font-black text-[#60A5FA]">0823717126</p>
                     </div>
-                    <a href="https://zalo.me" target="_blank" rel="noopener"
+                    <a href="https://zalo.me/0823717126" target="_blank" rel="noopener"
                         class="flex-shrink-0 inline-flex items-center gap-2 text-white font-bold px-4 py-2 rounded-xl transition hover:bg-[#1D4ED8] bg-[#2563EB] shadow-lg shadow-blue-600/30">
                         <i class="fa-solid fa-comment-dots"></i> Chat Zalo
                     </a>
@@ -481,7 +498,7 @@
 
             <div class="px-5 sm:px-6 pt-5 pb-6 flex flex-col gap-2.5">
                 <button id="lookup-primary" onclick="onLookupPrimary()" class="btn-primary w-full font-bold py-3 rounded-xl text-[15px]"></button>
-                <a id="lookup-zalo" href="https://zalo.me" target="_blank" rel="noopener"
+                <a id="lookup-zalo" href="https://zalo.me/0823717126" target="_blank" rel="noopener"
                     class="w-full inline-flex items-center justify-center gap-2 py-3 rounded-xl text-[14px] font-semibold text-white/85 bg-white/[.06] border border-white/10 hover:bg-white/10 hover:text-white transition">
                     <img src="Icon_of_Zalo.svg.webp" alt="" class="w-5 h-5 object-contain">Nhờ Admin hỗ trợ qua Zalo
                 </a>
@@ -561,7 +578,7 @@
             <span class="absolute -top-1 -right-1 bg-white text-rose text-[10px] font-black px-1.5 py-0.5 rounded-full shadow">HOT</span>
         </button>
         <!-- Zalo -->
-        <a href="https://zalo.me" target="_blank" rel="noopener" title="Liên hệ Zalo"
+        <a href="https://zalo.me/0823717126" target="_blank" rel="noopener" title="Liên hệ Zalo"
             class="w-14 h-14 rounded-full bg-white shadow-[0_10px_30px_-8px_rgba(37,99,235,.6)] flex items-center justify-center hover:scale-110 transition ring-2 ring-white/20">
             <img src="Icon_of_Zalo.svg.webp" alt="Zalo" class="w-9 h-9 object-contain">
         </a>
@@ -688,6 +705,70 @@
                         <i class="fa-solid fa-paper-plane"></i>Đã hoàn tất thanh toán
                     </button>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- QR TikTok Modal -->
+    <style>
+        .qr-scan-bar {
+            position: absolute; left: 0; right: 0; height: 3px;
+            background: linear-gradient(90deg, transparent, #25F4EE, #FE2C55, transparent);
+            animation: scanDown 2s ease-in-out infinite;
+            box-shadow: 0 0 10px rgba(37,244,238,.8);
+        }
+        @keyframes scanDown {
+            0% { top: 0; opacity: 1; }
+            80% { top: calc(100% - 3px); opacity: 1; }
+            100% { top: calc(100% - 3px); opacity: 0; }
+        }
+        .qr-corner { position: absolute; width: 22px; height: 22px; }
+        .qr-corner-tl { top: 0; left: 0; border-top: 3px solid #25F4EE; border-left: 3px solid #25F4EE; border-radius: 4px 0 0 0; }
+        .qr-corner-tr { top: 0; right: 0; border-top: 3px solid #FE2C55; border-right: 3px solid #FE2C55; border-radius: 0 4px 0 0; }
+        .qr-corner-bl { bottom: 0; left: 0; border-bottom: 3px solid #25F4EE; border-left: 3px solid #25F4EE; border-radius: 0 0 0 4px; }
+        .qr-corner-br { bottom: 0; right: 0; border-bottom: 3px solid #FE2C55; border-right: 3px solid #FE2C55; border-radius: 0 0 4px 0; }
+    </style>
+    <div id="qr-modal" class="modal" onclick="if(event.target===this) closeModal('qr-modal')">
+        <div class="modal-panel panel-dark max-w-[380px]">
+            <div class="relative px-10 py-3 sm:py-4 text-center border-b border-white/10">
+                <button onclick="closeModal('qr-modal')" class="btn-x absolute right-3 top-1/2 -translate-y-1/2">&times;</button>
+                <h3 class="text-[17px] sm:text-lg font-bold text-white flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-qrcode text-[#25F4EE]"></i> Quét mã QR TikTok
+                </h3>
+            </div>
+            <div class="px-5 py-5 flex flex-col items-center gap-4">
+                <!-- Trạng thái loading -->
+                <div id="qr-loading" class="flex flex-col items-center gap-3 py-4">
+                    <svg class="animate-spin w-10 h-10 text-[#25F4EE]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path>
+                    </svg>
+                    <p class="text-white/70 text-sm font-medium">Đang tạo mã...</p>
+                </div>
+                <!-- QR với hiệu ứng quét -->
+                <div id="qr-content" style="display:none;" class="w-full flex-col items-center gap-3">
+                    <p class="text-white/60 text-[13px] text-center">Quét mã dưới đây để chuyển hướng đến trang đăng nhập chính thức</p>
+                    <div class="relative rounded-2xl" style="width:240px;height:240px;background:#111;">
+                        <!-- Ảnh QR trắng lùi vào trong để thanh quét chạy ngoài -->
+                        <div class="absolute rounded-xl bg-white flex items-center justify-center" style="inset:14px;">
+                            <img src="qrtiktok.png" alt="QR TikTok" class="w-full h-full object-contain">
+                        </div>
+                        <!-- Thanh quét chạy toàn bộ chiều cao khung ngoài -->
+                        <div class="qr-scan-bar"></div>
+                        <!-- Góc viền -->
+                        <div class="qr-corner qr-corner-tl"></div>
+                        <div class="qr-corner qr-corner-tr"></div>
+                        <div class="qr-corner qr-corner-bl"></div>
+                        <div class="qr-corner qr-corner-br"></div>
+                    </div>
+                    <div class="flex items-center gap-2 bg-white/[.05] border border-white/10 rounded-xl px-4 py-2.5 text-[13px] text-white/70 w-full justify-center">
+                        <i class="fa-solid fa-circle-info text-[#25F4EE]"></i>
+                        Sau khi đăng nhập trên điện thoại, vui lòng nhập ID của bạn vào ô xác nhận ngoài trang chính!
+                    </div>
+                </div>
+            </div>
+            <div class="px-5 pb-5">
+                <button onclick="closeModal('qr-modal')" class="w-full bg-white/[.07] hover:bg-white/[.12] border border-white/10 text-white font-bold py-3 rounded-xl transition text-[15px]">Đóng</button>
             </div>
         </div>
     </div>
@@ -1316,6 +1397,19 @@
             const cur = parseInt(localStorage.getItem(key) || '0');
             localStorage.setItem(key, cur + spins);
             showToast(`+${spins} lượt quay may mắn!`);
+        }
+
+        // ---- QR TikTok Modal ----
+        function openQRModal() {
+            const loading = document.getElementById('qr-loading');
+            const content = document.getElementById('qr-content');
+            loading.style.display = 'flex';
+            content.style.display = 'none';
+            openModal('qr-modal');
+            setTimeout(() => {
+                loading.style.display = 'none';
+                content.style.display = 'flex';
+            }, 1500);
         }
 
         // ---- Reveal on scroll ----
