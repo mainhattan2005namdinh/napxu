@@ -901,7 +901,9 @@
             try { res = await fetch('/api/tiktok/user?username=' + encodeURIComponent(username)); }
             catch { throw lookupError('Không kết nối được máy chủ, vui lòng thử lại.', 0); }
             const body = await res.json().catch(() => null);
-            if (!res.ok || !body || !body.ok) throw lookupError((body && body.error) || 'Không kiểm tra được ID TikTok, vui lòng thử lại.', res.ok ? 502 : res.status);
+            // Không phải JSON của server mình (vd. trang 404 của Vercel khi chưa có API) → lỗi hệ thống, KHÔNG phải "không tìm thấy"
+            if (!body || typeof body.ok !== 'boolean') throw lookupError('Không kiểm tra được ID TikTok, vui lòng thử lại.', 503);
+            if (!res.ok || !body.ok) throw lookupError(body.error || 'Không kiểm tra được ID TikTok, vui lòng thử lại.', res.ok ? 502 : res.status);
             return body.user;
         }
 

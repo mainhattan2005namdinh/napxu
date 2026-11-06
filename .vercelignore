@@ -1,0 +1,7 @@
+# Không đưa lên Vercel: bí mật, code chỉ dùng khi chạy local, tài liệu
+.env
+.env.*
+server.js
+scripts/
+tikhub-sample.json
+HUONG_DAN_TIKHUB.md

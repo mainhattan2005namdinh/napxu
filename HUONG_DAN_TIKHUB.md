@@ -186,6 +186,8 @@ Sửa `.env` xong thì tắt server (`Ctrl+C`) và chạy lại `npm start`.
 | Khách thấy "Hãy chạy npm start rồi mở http://localhost:3000" | Đang mở index.html bằng bấm đúp                 | Chạy `npm start` rồi mở `http://localhost:3000`.                        |
 | `Error: listen EADDRINUSE :::3000`                           | Cổng 3000 đang bị chương trình khác dùng        | Tắt server cũ đang chạy, hoặc đổi `PORT=3001` trong `.env`.             |
 | Avatar chỉ hiện chữ cái đầu                                  | Link ảnh TikTok hết hạn hoặc bị chặn            | Không ảnh hưởng chức năng. Sau 24 giờ web tự lấy lại.                   |
+| Vercel: `/api/...` trả trang "NOT_FOUND"                     | Thư mục `api/` chưa được deploy                 | Push code mới lên GitHub, hoặc Redeploy (xem mục 9, phần Vercel).       |
+| Vercel: `/api/health` trả `"tikhubKey": false`               | Chưa thêm key, hoặc thêm rồi chưa Redeploy      | Thêm `TIKHUB_API_KEY` trong Settings → Environment Variables, rồi Redeploy. |
 
 Khách chỉ thấy thông báo chung chung như "đang bảo trì". Lý do kỹ thuật chi tiết chỉ in ra Terminal của server, để không lộ thông tin hệ thống.
 
@@ -193,9 +195,46 @@ Khách chỉ thấy thông báo chung chung như "đang bảo trì". Lý do kỹ
 
 ## 9. Đưa web lên mạng (deploy)
 
-Trang web giờ cần **chạy server Node**. Các dịch vụ chỉ host file tĩnh như **GitHub Pages không chạy được** phần tra cứu.
+Phần tra cứu cần một nơi chạy code server để giữ API key. Các dịch vụ chỉ host file tĩnh như **GitHub Pages không chạy được** phần này.
 
-### Cách dễ nhất: Render.com (có gói miễn phí)
+### Vercel (đang dùng: napxu-ecru.vercel.app)
+
+Vercel **không chạy `server.js`**. Thay vào đó, Vercel tự biến các file trong thư mục `api/` thành "Serverless Function":
+
+| Đường dẫn          | File chạy trên Vercel |
+| ------------------ | --------------------- |
+| `/api/tiktok/user` | `api/tiktok/user.js`  |
+| `/api/health`      | `api/health.js`       |
+
+Cả hai file dùng chung logic với `server.js` (nằm trong `api/_lib/`), nên local và Vercel chạy giống hệt nhau.
+
+**Bước 1: Thêm API key vào Vercel**, vì file `.env` không được đưa lên Vercel:
+
+1. Vào https://vercel.com, chọn project **napxu**, rồi **Settings → Environment Variables**.
+2. Thêm biến:
+   - **Key:** `TIKHUB_API_KEY`
+   - **Value:** token TikHub của bạn
+   - **Environments:** tick **Production** (và **Preview** nếu muốn link preview cũng chạy được)
+3. (Tuỳ chọn) thêm `DAILY_TIKHUB_LIMIT`, `LOOKUPS_PER_IP_PER_MINUTE`, `CACHE_TTL_MINUTES` như ở mục 7. **Không cần** `TRUST_PROXY` và `PORT`, vì code tự nhận ra khi đang chạy trên Vercel.
+
+**Bước 2: Deploy code mới**
+
+1. Commit và push lên GitHub. Vercel sẽ tự deploy.
+2. ⚠️ **Biến môi trường chỉ có hiệu lực từ lần deploy sau.** Nếu bạn thêm hoặc sửa key *sau khi* deploy, hãy vào tab **Deployments**, bấm **⋯** ở bản mới nhất rồi chọn **Redeploy**.
+
+**Bước 3: Kiểm tra**
+
+- Mở `https://napxu-ecru.vercel.app/api/health`. Kết quả phải là `{"ok":true,"tikhubKey":true}`.
+  - Nếu thấy trang **"The page could not be found / NOT_FOUND"**: code mới (thư mục `api/`) chưa được deploy.
+  - Nếu thấy `"tikhubKey":false`: chưa thêm key, hoặc chưa Redeploy sau khi thêm.
+- Đăng nhập thử bằng ID TikTok của bạn trên web.
+- Xem log tra cứu (các dòng `[tikhub] ✓ ...` / `✗ ...`) ở mục **Logs** của project trên Vercel.
+
+> **Lưu ý về giới hạn trên Vercel:** Vercel có thể chạy nhiều bản function song song, và mỗi bản có bộ nhớ riêng, tắt đi là mất. Vì vậy cache 30 phút, giới hạn 5 lượt/phút/IP và trần `DAILY_TIKHUB_LIMIT` trên Vercel chỉ là "cố gắng hết sức", không chính xác tuyệt đối như khi chạy 1 server. Cache 24 giờ trên trình duyệt khách vẫn hoạt động bình thường. Nếu cần giới hạn chặt, có thể gắn thêm Upstash Redis (có gói miễn phí) để mọi bản function dùng chung một bộ đếm.
+
+File `.vercelignore` đã chặn `server.js`, `scripts/`, file hướng dẫn này và `.env` khỏi bản deploy, nên chúng không tải về công khai được trên Vercel.
+
+### Render.com (có gói miễn phí)
 
 1. Commit và push code lên GitHub (file `.env` sẽ tự động **không** bị đẩy lên).
 2. Vào https://render.com, đăng nhập bằng GitHub, chọn **New → Web Service** rồi chọn repo `napxu`.
@@ -232,7 +271,12 @@ Sau đó cấu hình Nginx trỏ tên miền về cổng 3000 và bật HTTPS.
 | File                      | Vai trò                                                                                                                                                                              |
 | ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | `server.js`               | Server: phục vụ trang web và API `/api/tiktok/user`, kèm cache và chống spam. Chỉ cho tải về file `.html` và ảnh ở thư mục gốc, nên `.env` và code server không bao giờ lộ ra ngoài. |
-| `tikhub.js`               | Gọi TikHub và chuẩn hoá dữ liệu user. Hỗ trợ cả 2 dạng dữ liệu TikTok Web và TikTok App.                                                                                             |
+| `api/_lib/tikhub.js`      | Gọi TikHub và chuẩn hoá dữ liệu user. Hỗ trợ cả 2 dạng dữ liệu TikTok Web và TikTok App.                                                                                             |
+| `api/_lib/lookup.js`      | Logic tra cứu dùng chung (cache, chống spam, trần mỗi ngày) cho cả `server.js` và Vercel.                                                                                            |
+| `api/tiktok/user.js`      | Vercel function cho đường dẫn `/api/tiktok/user`.                                                                                                                                    |
+| `api/health.js`           | Vercel function cho đường dẫn `/api/health` (cho biết server đã có key chưa, không lộ key).                                                                                          |
+| `vercel.json`             | Cho phép function tra cứu chạy tối đa 30 giây (TikHub đôi khi chậm).                                                                                                                 |
+| `.vercelignore`           | Chặn `.env`, `server.js`, `scripts/` và file hướng dẫn khỏi bản deploy trên Vercel.                                                                                                  |
 | `scripts/check-tikhub.js` | Lệnh `npm run check` để kiểm tra key, số dư và tra thử user.                                                                                                                         |
 | `.env`                    | **Bí mật**, chứa API key. Không commit.                                                                                                                                              |
 | `.env.example`            | Bản mẫu của `.env`, được phép commit.                                                                                                                                                |

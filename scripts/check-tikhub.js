@@ -9,7 +9,7 @@ const path = require('node:path');
 const root = path.join(__dirname, '..');
 try { process.loadEnvFile(path.join(root, '.env')); } catch { /* dùng biến môi trường hệ thống */ }
 
-const { getAccountInfo, fetchUserProfile, normalizeUsername } = require('../tikhub');
+const { getAccountInfo, fetchUserProfile, normalizeUsername } = require('../api/_lib/tikhub');
 
 (async () => {
     const key = (process.env.TIKHUB_API_KEY || '').trim();
