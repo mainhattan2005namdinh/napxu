@@ -1,0 +1,14 @@
+{
+  "name": "napxu",
+  "version": "1.0.0",
+  "private": true,
+  "description": "XuLive — trang nạp Xu, server trung gian gọi TikHub để lấy thông tin user TikTok",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "check": "node scripts/check-tikhub.js"
+  },
+  "engines": {
+    "node": ">=20.12"
+  }
+}

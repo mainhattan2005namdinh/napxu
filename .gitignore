@@ -1,0 +1,9 @@
+# Bí mật — tuyệt đối không commit
+.env
+.env.*
+!.env.example
+
+# Dữ liệu thử nghiệm từ npm run check
+tikhub-sample.json
+
+node_modules/

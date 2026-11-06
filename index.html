@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#0A0A0F">
     <title>XuLive — Nạp Xu & Quà tặng Livestream</title>
     <meta name="description" content="XuLive — nền tảng mua và nạp Xu để gửi quà tặng trong livestream. Nhanh, an toàn, giá tốt.">
     <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%2325F4EE'/%3E%3Cstop offset='1' stop-color='%23FE2C55'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='32' height='32' rx='8' fill='url(%23g)'/%3E%3Ctext x='16' y='22' font-size='16' font-weight='bold' text-anchor='middle' fill='white' font-family='Arial'%3EX%3C/text%3E%3C/svg%3E">
@@ -16,70 +17,177 @@
                     colors: {
                         cyan: '#25F4EE',
                         rose: '#FE2C55',
-                        ink: '#121212'
+                        ink: '#0A0A0F'
                     },
                     fontFamily: {
-                        sans: ['Inter', 'system-ui', 'sans-serif']
+                        sans: ['"TikTok Sans"', 'Inter', 'system-ui', 'sans-serif']
                     }
                 }
             }
         }
     </script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <!-- Tách 2 link để nếu 1 font lỗi thì font còn lại vẫn tải -->
+    <link href="https://fonts.googleapis.com/css2?family=TikTok+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <style>
-        :root { --cyan:#25F4EE; --rose:#FE2C55; }
-        html { scroll-behavior: smooth; }
+        :root {
+            --cyan: #25F4EE; --rose: #FE2C55;
+            --bg: #0A0A0F; --card: #14141C; --panel: #15151D;
+            --line: rgba(255,255,255,.08);
+        }
+        html { scroll-behavior: smooth; background: var(--bg); color-scheme: dark; }
+        body { background: transparent; }
+        ::selection { background: rgba(254,44,85,.4); color: #fff; }
+
+        /* ===== Nền: vệt sáng cyan/hồng + lưới mờ ===== */
+        body::before {
+            content: ''; position: fixed; inset: 0; z-index: -2; pointer-events: none;
+            background:
+                radial-gradient(700px 480px at -5% -10%, rgba(37,244,238,.16), transparent 60%),
+                radial-gradient(640px 480px at 105% 5%, rgba(254,44,85,.18), transparent 60%),
+                radial-gradient(900px 600px at 50% 115%, rgba(254,44,85,.10), transparent 60%);
+        }
+        body::after {
+            content: ''; position: fixed; inset: 0; z-index: -1; pointer-events: none;
+            background-image:
+                linear-gradient(rgba(255,255,255,.035) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,.035) 1px, transparent 1px);
+            background-size: 44px 44px;
+            -webkit-mask-image: radial-gradient(ellipse 80% 55% at 50% 0%, #000 30%, transparent 75%);
+                    mask-image: radial-gradient(ellipse 80% 55% at 50% 0%, #000 30%, transparent 75%);
+        }
 
         .brand-gradient { background: linear-gradient(135deg, var(--cyan) 0%, var(--rose) 100%); }
         .text-gradient {
-            background: linear-gradient(135deg, var(--cyan) 0%, var(--rose) 100%);
+            background: linear-gradient(120deg, var(--cyan) 0%, #9FA8FF 45%, var(--rose) 100%);
             -webkit-background-clip: text; background-clip: text; color: transparent;
         }
 
-        /* Logo gốc (không dùng thương hiệu bên thứ ba) */
-        .logo-mark {
-            width: 38px; height: 38px; border-radius: 11px;
-            display: inline-flex; align-items: center; justify-content: center;
-            font-weight: 900; color: #fff; font-size: 20px;
-            box-shadow: 0 6px 18px rgba(254,44,85,.35);
+        /* ===== Hiệu ứng chữ glitch kiểu TikTok ===== */
+        .glitch { text-shadow: -2px -2px 0 var(--cyan), 2px 2px 0 var(--rose); }
+        .glitch-anim { animation: glitch 5s infinite steps(1); }
+        @keyframes glitch {
+            0%, 88%, 100% { text-shadow: -2px -2px 0 var(--cyan), 2px 2px 0 var(--rose); transform: none; }
+            90% { text-shadow: -4px 0 0 var(--cyan), 4px 0 0 var(--rose); transform: translateX(1px); }
+            92% { text-shadow: 3px -2px 0 var(--cyan), -3px 2px 0 var(--rose); transform: translateX(-2px) skewX(-6deg); }
+            94% { text-shadow: -1px 2px 0 var(--cyan), 1px -2px 0 var(--rose); transform: translateX(1px); }
+            96% { text-shadow: -3px -1px 0 var(--cyan), 3px 1px 0 var(--rose); transform: none; }
         }
+        .logo-glow { filter: drop-shadow(-1.5px -1.5px 0 rgba(37,244,238,.75)) drop-shadow(1.5px 1.5px 0 rgba(254,44,85,.75)); }
 
-        .coin-icon { background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%); }
+        /* ===== Đồng Xu ===== */
+        .coin {
+            position: relative; flex-shrink: 0; border-radius: 9999px;
+            display: inline-flex; align-items: center; justify-content: center;
+            font-weight: 900; color: #7A4300; line-height: 1;
+            background: radial-gradient(circle at 32% 28%, #FFF6C2 0 10%, #FFD54A 34%, #F7A400 72%, #B86E00 100%);
+            box-shadow: inset 0 0 0 1.5px rgba(255,255,255,.35), inset 0 -3px 6px rgba(120,60,0,.35), 0 4px 14px rgba(255,170,0,.30);
+        }
+        .coin::after { content: ''; position: absolute; inset: 14%; border-radius: inherit; border: 1.5px solid rgba(150,85,0,.28); }
+        .float-a { animation: floatY 5s ease-in-out infinite; }
+        .float-b { animation: floatY 6s ease-in-out -2s infinite; }
+        .float-c { animation: floatY 4.5s ease-in-out -1s infinite; }
+        @keyframes floatY {
+            0%, 100% { transform: translateY(0) rotate(-8deg); }
+            50% { transform: translateY(-10px) rotate(8deg); }
+        }
+        .sparkle { animation: twinkle 2.4s ease-in-out infinite; }
+        @keyframes twinkle { 0%, 100% { opacity: .25; transform: scale(.7); } 50% { opacity: 1; transform: scale(1); } }
 
-        /* Marquee */
+        /* ===== Marquee ===== */
         .marquee-wrap { overflow: hidden; }
         .marquee { display: inline-block; white-space: nowrap; padding-left: 100%; animation: marquee 25s linear infinite; }
         @keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-100%); } }
+        .edge-fade {
+            -webkit-mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
+                    mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
+        }
 
-        .card-hover { transition: transform .2s ease, box-shadow .2s ease; }
-        .card-hover:hover { transform: translateY(-4px); box-shadow: 0 14px 34px rgba(0,0,0,.10); }
+        /* ===== Thẻ & khối ===== */
+        .glass { background: rgba(20,20,28,.72); border: 1px solid var(--line); -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px); }
+
+        /* Thẻ gói Xu: viền gradient cyan → hồng khi được chọn */
+        .pkg {
+            position: relative; border-radius: 18px; background: var(--card);
+            border: 1px solid var(--line); cursor: pointer;
+            transition: transform .22s cubic-bezier(.2,.8,.2,1), border-color .2s ease, box-shadow .25s ease, background .25s ease;
+        }
+        .pkg::before {
+            content: ''; position: absolute; inset: -1px; border-radius: inherit; padding: 1.5px; pointer-events: none;
+            background: linear-gradient(135deg, var(--cyan), var(--rose));
+            -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+                    mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+            -webkit-mask-composite: xor; mask-composite: exclude;
+            opacity: 0; transition: opacity .2s ease;
+        }
+        .pkg:hover { transform: translateY(-3px); border-color: rgba(255,255,255,.18); box-shadow: 0 16px 34px -14px rgba(0,0,0,.8); }
+        .pkg.is-selected {
+            background: linear-gradient(160deg, rgba(254,44,85,.14), rgba(37,244,238,.05) 70%), var(--card);
+            box-shadow: 0 14px 40px -12px rgba(254,44,85,.55);
+        }
+        .pkg.is-selected::before { opacity: 1; }
+        .pkg .pkg-check { opacity: 0; transform: scale(.4); transition: all .25s cubic-bezier(.34,1.56,.64,1); }
+        .pkg.is-selected .pkg-check { opacity: 1; transform: scale(1); }
+        .pkg.is-selected .pkg-price { color: #FF8FA3; }
+
+        /* fill-mode backwards: sau khi chạy xong trả transform lại cho :hover */
+        .pop { animation: popIn .55s cubic-bezier(.2,.8,.2,1) backwards; }
+        @keyframes popIn { from { opacity: 0; transform: translateY(14px) scale(.97); } to { opacity: 1; transform: none; } }
+        .rise { animation: rise .5s cubic-bezier(.2,.8,.2,1) backwards; }
+        @keyframes rise { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
 
         .fade-in { opacity: 0; transform: translateY(16px); transition: opacity .6s ease, transform .6s ease; }
         .fade-in.show { opacity: 1; transform: none; }
 
-        /* Hero glow (phong cách TikTok: nền tối + vệt sáng cyan/hồng) */
-        .hero-glow {
-            position: absolute; inset: 0; pointer-events: none;
-            background:
-                radial-gradient(60% 60% at 15% 10%, rgba(37,244,238,.22) 0%, transparent 60%),
-                radial-gradient(55% 55% at 90% 90%, rgba(254,44,85,.25) 0%, transparent 60%);
+        /* Nút chính: hồng TikTok + vệt sáng chạy + bóng cyan khi hover */
+        .btn-primary {
+            position: relative; overflow: hidden; isolation: isolate;
+            background: var(--rose); color: #fff;
+            box-shadow: 0 12px 30px -10px rgba(254,44,85,.7), inset 0 1px 0 rgba(255,255,255,.25);
+            transition: transform .18s ease, box-shadow .18s ease, filter .18s ease;
         }
+        .btn-primary::after {
+            content: ''; position: absolute; top: 0; left: -60%; width: 40%; height: 100%; z-index: -1;
+            background: linear-gradient(120deg, transparent, rgba(255,255,255,.38), transparent);
+            transform: skewX(-20deg); animation: shine 3.4s ease-in-out infinite;
+        }
+        .btn-primary:hover { transform: translate(1px, -1px); box-shadow: -3px 3px 0 var(--cyan), 0 14px 34px -10px rgba(254,44,85,.8); }
+        .btn-primary:active { transform: translate(0, 0) scale(.99); box-shadow: -1px 1px 0 var(--cyan); }
+        @keyframes shine { 0% { left: -60%; } 55%, 100% { left: 130%; } }
+
+        /* Vòng avatar xoay kiểu livestream */
+        .avatar-ring { position: relative; overflow: hidden; border-radius: 9999px; padding: 2.5px; }
+        .avatar-ring::before {
+            content: ''; position: absolute; inset: -50%;
+            background: conic-gradient(var(--cyan), var(--rose), #9FA8FF, var(--cyan));
+            animation: spin 4s linear infinite;
+        }
+        .avatar-ring > * { position: relative; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        .live-dot { position: relative; }
+        .live-dot::after { content: ''; position: absolute; inset: -4px; border-radius: 9999px; border: 2px solid var(--rose); animation: ripple 1.8s ease-out infinite; }
+        @keyframes ripple { from { opacity: .8; transform: scale(.8); } to { opacity: 0; transform: scale(1.5); } }
+
+        input[type=number]::-webkit-inner-spin-button, input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+        input[type=number] { -moz-appearance: textfield; appearance: textfield; }
 
         [x-cloak] { display: none !important; }
 
-        /* Modal: fade nền + panel bật lên, luôn nằm gọn trong màn hình */
+        /* ===== Modal: fade nền + panel bật lên, luôn nằm gọn trong màn hình ===== */
         .modal {
             position: fixed; inset: 0; z-index: 60;
             display: flex; align-items: center; justify-content: center; padding: 12px;
-            background: rgba(15, 15, 20, .55);
-            -webkit-backdrop-filter: blur(4px); backdrop-filter: blur(4px);
+            background: rgba(0, 0, 0, .66);
+            -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
             opacity: 0; visibility: hidden;
             transition: opacity .28s ease, visibility 0s linear .32s;
         }
         .modal.open { opacity: 1; visibility: visible; transition: opacity .28s ease; }
         .modal-panel {
-            width: 100%; border-radius: 18px;
+            width: 100%; border-radius: 22px;
             max-height: calc(100dvh - 24px); overflow-y: auto; overscroll-behavior: contain;
             opacity: 0; transform: translateY(18px) scale(.94);
             transition: transform .32s cubic-bezier(.4, 0, .2, 1), opacity .2s ease;
@@ -88,194 +196,264 @@
             opacity: 1; transform: none;
             transition: transform .45s cubic-bezier(.34, 1.4, .64, 1), opacity .25s ease;
         }
+        /* Panel tối với đường viền gradient mảnh ở cạnh trên */
+        .panel-dark {
+            color: #fff;
+            background:
+                linear-gradient(90deg, rgba(37,244,238,0), rgba(37,244,238,.65), rgba(254,44,85,.65), rgba(254,44,85,0)) top / 100% 1px no-repeat,
+                var(--panel);
+            border: 1px solid var(--line);
+            box-shadow: 0 40px 90px -20px rgba(0,0,0,.9);
+        }
+        .btn-x {
+            width: 2rem; height: 2rem; border-radius: 9999px; flex-shrink: 0;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.5rem; line-height: 1; color: rgba(255,255,255,.5); transition: all .15s ease;
+        }
+        .btn-x:hover { background: rgba(255,255,255,.1); color: #fff; }
         body.modal-lock { overflow: hidden; }
+
+        /* Thanh cuộn tối */
+        * { scrollbar-width: thin; scrollbar-color: rgba(255,255,255,.18) transparent; }
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-thumb { background: rgba(255,255,255,.16); border-radius: 8px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+        }
     </style>
 </head>
-<body class="bg-[#F6F7F9] text-ink font-sans antialiased min-h-screen flex flex-col">
+<body class="text-white font-sans antialiased min-h-screen flex flex-col">
 
     <!-- Header -->
-    <header class="bg-white/90 backdrop-blur border-b border-gray-100 sticky top-0 z-40">
-        <div class="max-w-4xl mx-auto px-4 h-16 flex items-center justify-between">
-            <a href="#top" class="flex items-center space-x-2">
-                <img src="tiktok-sign-logo.png" alt="Logo" class="h-9 w-9 object-contain rounded-xl">
-                <span class="hidden sm:inline text-2xl font-black tracking-tight">Xu<span class="text-gradient">Live</span></span>
+    <header class="sticky top-0 z-40 bg-[#0A0A0F]/75 backdrop-blur-xl border-b border-white/[.06]">
+        <div class="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between gap-3">
+            <a href="#top" class="flex items-center gap-2.5 flex-shrink-0 group">
+                <img src="tiktok-sign-logo.png" alt="Logo" class="logo-glow h-9 w-9 object-contain rounded-xl transition group-hover:scale-105">
+                <span class="hidden sm:inline text-[26px] font-black tracking-tight leading-none">Xu<span class="text-gradient">Live</span></span>
             </a>
 
-            <div class="flex items-center gap-2">
-                <button onclick="openNoticeModal()" class="relative bg-gray-100 hover:bg-gray-200 text-gray-700 w-10 h-10 rounded-full flex items-center justify-center transition" title="Lưu ý quan trọng">
+            <div class="flex items-center gap-2 sm:gap-2.5 min-w-0">
+                <button onclick="openNoticeModal()" class="relative flex-shrink-0 bg-white/[.06] hover:bg-white/[.12] border border-white/10 w-10 h-10 rounded-full flex items-center justify-center transition" title="Lưu ý quan trọng">
                     <i class="fa-solid fa-bell text-rose"></i>
-                    <span class="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 bg-rose rounded-full animate-ping"></span>
-                    <span class="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 bg-rose rounded-full"></span>
+                    <span class="absolute top-0 right-0 w-2.5 h-2.5 bg-rose rounded-full animate-ping"></span>
+                    <span class="absolute top-0 right-0 w-2.5 h-2.5 bg-rose rounded-full ring-2 ring-[#0A0A0F]"></span>
                 </button>
                 <!-- Ô nhập ID TikTok -->
-                <div id="login-area" class="relative">
-                    <div class="flex items-center bg-[#F8F9FB] border border-[#FE2C55] rounded-lg pl-3 pr-1 py-1 gap-2">
-                        <span class="text-gray-400 text-[15px]">@</span>
+                <div id="login-area" class="relative min-w-0">
+                    <div class="flex items-center bg-white/[.06] border border-white/10 focus-within:border-rose/70 focus-within:bg-white/[.09] focus-within:shadow-[0_0_0_4px_rgba(254,44,85,.15)] rounded-full pl-3.5 pr-1 py-1 gap-1.5 transition">
+                        <span class="text-white/40 text-[15px] font-semibold">@</span>
                         <input type="text" id="tiktok-id-input" placeholder="Nhập ID TikTok của bạn" autocomplete="off"
-                            class="bg-transparent text-[15px] focus:outline-none w-32 sm:w-44 text-gray-800 placeholder:text-gray-400"
+                            class="bg-transparent text-[14px] sm:text-[15px] focus:outline-none w-28 sm:w-48 min-w-0 text-white placeholder:text-white/35"
                             onfocus="showAccountDropdown()" onclick="showAccountDropdown()"
                             onblur="setTimeout(hideAccountDropdown, 150)"
                             onkeydown="if(event.key==='Enter') loginTikTok()">
-                        <button id="login-btn" onclick="loginTikTok()" class="text-white font-bold text-[15px] px-3.5 py-1.5 rounded-md transition hover:opacity-90 whitespace-nowrap flex items-center gap-1.5 bg-[#FE2C55]">
+                        <button id="login-btn" onclick="loginTikTok()" class="btn-primary !shadow-none hover:!shadow-none hover:!transform-none text-white font-bold text-[14px] sm:text-[15px] px-3.5 sm:px-4 py-1.5 rounded-full whitespace-nowrap flex items-center gap-1.5">
                             <span id="login-btn-text">Đăng nhập</span>
                         </button>
                     </div>
-                    <ul id="account-dropdown" class="hidden absolute right-0 top-full mt-2 min-w-[270px] bg-[#161823] rounded-lg shadow-xl py-1.5 z-50"></ul>
+                    <ul id="account-dropdown" class="hidden absolute right-0 top-full mt-2 min-w-[270px] bg-[#1B1B25]/95 backdrop-blur-xl border border-white/10 rounded-2xl shadow-2xl shadow-black/60 p-1.5 z-50"></ul>
                 </div>
             </div>
         </div>
 
         <!-- Marquee -->
-        <div class="brand-gradient text-white text-sm py-1.5 marquee-wrap">
+        <div class="relative border-t border-white/[.05] bg-black/30 text-white/80 text-[13px] py-1.5 marquee-wrap edge-fade">
             <div class="marquee">
-                <span data-icon="gift" class="w-4 h-4 mr-1"></span>Ưu đãi hôm nay: nạp từ 100.000đ tặng thêm 5% Xu &nbsp;•&nbsp; <span data-icon="zap" class="w-4 h-4 mr-1"></span>Cộng Xu tự động trong vài giây &nbsp;•&nbsp; <span data-icon="shield" class="w-4 h-4 mr-1"></span>Thanh toán an toàn &nbsp;•&nbsp; <span data-icon="message" class="w-4 h-4 mr-1"></span>Hỗ trợ 24/7
+                <span data-icon="gift" class="w-4 h-4 mr-1 text-rose"></span>Ưu đãi hôm nay: nạp từ 100.000đ tặng thêm 5% Xu &nbsp;<span class="text-white/25">•</span>&nbsp; <span data-icon="zap" class="w-4 h-4 mr-1 text-cyan"></span>Cộng Xu tự động trong vài giây &nbsp;<span class="text-white/25">•</span>&nbsp; <span data-icon="shield" class="w-4 h-4 mr-1 text-cyan"></span>Thanh toán an toàn &nbsp;<span class="text-white/25">•</span>&nbsp; <span data-icon="message" class="w-4 h-4 mr-1 text-rose"></span>Hỗ trợ 24/7
             </div>
+            <div class="absolute bottom-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-cyan/40 via-50% to-transparent"></div>
         </div>
     </header>
 
     <main id="top" class="flex-1">
-        <div class="max-w-4xl mx-auto px-4 py-6">
+        <div class="max-w-6xl mx-auto px-4 py-6 sm:py-8">
 
             <!-- Profile Card (ẩn khi chưa đăng nhập) -->
-            <div id="profile-card" class="hidden max-w-[724px] mx-auto mb-7 bg-white rounded-2xl border border-gray-200 shadow-[0_2px_10px_rgba(0,0,0,0.04)] px-5 py-6">
-                <div class="flex-1 min-w-0">
-                        <div class="flex items-center justify-between gap-3">
-                            <p id="profile-name" class="font-bold text-[19px] leading-tight text-gray-900 truncate"></p>
-                            <span class="inline-flex items-center gap-1.5 bg-[#DCFCE7] text-[#15803D] text-[15px] font-medium px-4 py-1 rounded-full flex-shrink-0">
-                                <i class="fa-solid fa-circle-check text-[14px]"></i> Hợp lệ
-                            </span>
+            <div id="profile-card" class="hidden rise mb-5 glass rounded-3xl p-4 sm:p-5">
+                <!-- mobile: [avatar | tên | Hợp lệ] rồi số liệu xuống dòng; desktop: tất cả 1 hàng -->
+                <div class="flex flex-wrap items-center gap-x-3.5 gap-y-3">
+                    <div class="avatar-ring w-14 h-14 sm:w-16 sm:h-16 flex-shrink-0">
+                        <div id="profile-avatar" class="w-full h-full overflow-hidden rounded-full bg-gradient-to-br from-[#2A2A36] to-[#15151D] border-[3px] border-[#15151D] flex items-center justify-center text-xl font-black text-white"></div>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <div class="flex items-center gap-1.5 min-w-0">
+                            <p id="profile-nickname" class="font-extrabold text-lg sm:text-xl leading-tight text-white truncate"></p>
+                            <i id="profile-verified" class="hidden fa-solid fa-circle-check text-[#20D5EC] text-[15px] flex-shrink-0" title="Tài khoản đã xác minh"></i>
                         </div>
-                        <div class="flex items-center justify-between flex-wrap gap-x-4 gap-y-2 mt-3">
-                            <div class="flex items-center gap-2.5">
-                                <i class="fa-solid fa-phone text-[#2563EB] text-[15px] mr-1"></i>
-                                <input type="tel" id="zalo-phone-input" placeholder="Nhập SĐT Zalo hỗ trợ..."
-                                    class="w-[220px] h-[32px] px-2.5 text-[14px] bg-gray-50 border border-gray-300 rounded-md text-gray-800 placeholder:text-gray-400 focus:outline-none focus:border-[#2563EB] transition">
-                                <button onclick="saveZalo()" class="h-[30px] px-3 text-white font-bold text-[14px] rounded-md bg-[#2563EB] hover:bg-[#1D4ED8] transition">
-                                    Lưu Zalo
-                                </button>
-                            </div>
-                            <div class="flex items-center gap-3 text-[15px]">
-                                <button onclick="showRechargeHistory()" class="flex items-center gap-1 text-[#2563EB] underline underline-offset-2 hover:opacity-80 transition">
-                                    <i class="fa-solid fa-clock-rotate-left text-[13px]"></i>Lịch sử nạp
-                                </button>
-                                <span class="text-gray-300 text-lg leading-none">|</span>
-                                <button onclick="changeAccount()" class="flex items-center gap-1 text-[#DC2626] underline underline-offset-2 hover:opacity-80 transition">
-                                    <i class="fa-solid fa-right-from-bracket text-[13px]"></i>Đổi tài khoản
-                                </button>
-                            </div>
-                        </div>
-                        <p id="zalo-edit-note" class="text-xs italic text-gray-500 mt-2"></p>
+                        <p id="profile-name" class="text-[13px] sm:text-sm text-white/50 truncate"></p>
+                    </div>
+                    <span class="sm:order-last inline-flex items-center gap-1.5 bg-emerald-400/10 text-emerald-300 ring-1 ring-emerald-400/30 text-[13px] sm:text-sm font-semibold px-3 sm:px-3.5 py-1 rounded-full flex-shrink-0">
+                        <i class="fa-solid fa-circle-check text-[12px]"></i> Hợp lệ
+                    </span>
+                    <div id="profile-stats" class="hidden flex basis-full sm:basis-auto sm:mr-3 items-center rounded-2xl bg-black/25 border border-white/[.06] divide-x divide-white/[.08] py-2"></div>
                 </div>
+                <div class="mt-4 pt-4 border-t border-white/[.06] flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <div class="flex items-center gap-2 min-w-0">
+                        <div class="relative flex-1 sm:flex-none sm:w-[250px] min-w-0">
+                            <i class="fa-solid fa-phone absolute left-3 top-1/2 -translate-y-1/2 text-[#60A5FA] text-[13px]"></i>
+                            <input type="tel" id="zalo-phone-input" placeholder="Nhập SĐT Zalo hỗ trợ..."
+                                class="w-full h-10 pl-9 pr-3 text-[14px] bg-black/30 border border-white/10 rounded-xl text-white placeholder:text-white/35 focus:outline-none focus:border-[#3B82F6] focus:shadow-[0_0_0_4px_rgba(59,130,246,.15)] transition">
+                        </div>
+                        <button onclick="saveZalo()" class="h-10 px-4 text-white font-bold text-[14px] rounded-xl bg-[#2563EB] hover:bg-[#1D4ED8] shadow-lg shadow-blue-600/25 transition flex-shrink-0">
+                            Lưu Zalo
+                        </button>
+                    </div>
+                    <div class="flex items-center gap-2 text-[14px]">
+                        <button onclick="showRechargeHistory()" class="flex items-center gap-1.5 px-3 h-9 rounded-full bg-white/[.05] border border-white/10 text-[#93C5FD] hover:bg-white/10 transition">
+                            <i class="fa-solid fa-clock-rotate-left text-[12px]"></i>Lịch sử nạp
+                        </button>
+                        <button onclick="changeAccount()" class="flex items-center gap-1.5 px-3 h-9 rounded-full bg-white/[.05] border border-white/10 text-[#FF8FA3] hover:bg-rose/15 hover:border-rose/40 transition">
+                            <i class="fa-solid fa-right-from-bracket text-[12px]"></i>Đổi tài khoản
+                        </button>
+                    </div>
+                </div>
+                <p id="zalo-edit-note" class="text-xs italic text-white/40 mt-2"></p>
             </div>
 
             <!-- Ticker thông báo full width -->
-            <div class="flex items-center gap-3 bg-[#FFF0F3] border border-[#FE2C55]/20 rounded-xl px-3 py-2.5 mb-5 overflow-hidden">
-                <span class="w-7 h-7 rounded-full flex-shrink-0 flex items-center justify-center text-white text-xs" style="background:#FE2C55;">
+            <div class="fade-in flex items-center gap-3 glass rounded-2xl pl-2.5 pr-3 py-2 mb-6 overflow-hidden">
+                <span class="live-dot w-8 h-8 rounded-full flex-shrink-0 flex items-center justify-center text-white text-xs bg-rose shadow-[0_0_18px_rgba(254,44,85,.6)]">
                     <i class="fa-solid fa-bell"></i>
                 </span>
-                <div class="marquee-wrap flex-1 overflow-hidden">
-                    <span class="marquee text-sm text-gray-700">
-                        vklanh*** đã nạp thành công 2.000 Xu trị giá 523.000đ <span style="color:#FE2C55;">(Vừa xong)</span> &nbsp;•&nbsp; huyenngoc752*** đã nạp 5.000 Xu &nbsp;•&nbsp; long***2k đã nạp 10.000 Xu &nbsp;•&nbsp; minhkhanh*** đã nạp 1.000 Xu &nbsp;•&nbsp; thanhly***8 đã nạp 50.000 Xu
+                <div class="marquee-wrap edge-fade flex-1 overflow-hidden">
+                    <span class="marquee text-sm text-white/75">
+                        vklanh*** đã nạp thành công 2.000 Xu trị giá 523.000đ <span class="text-rose font-semibold">(Vừa xong)</span> &nbsp;<span class="text-white/25">•</span>&nbsp; huyenngoc752*** đã nạp 5.000 Xu &nbsp;<span class="text-white/25">•</span>&nbsp; long***2k đã nạp 10.000 Xu &nbsp;<span class="text-white/25">•</span>&nbsp; minhkhanh*** đã nạp 1.000 Xu &nbsp;<span class="text-white/25">•</span>&nbsp; thanhly***8 đã nạp 50.000 Xu
                     </span>
                 </div>
             </div>
 
             <!-- Gói nạp -->
-            <div id="packages">
-                <h2 class="text-xl font-black tracking-tight mb-1">Nhận Xu</h2>
-                <p class="text-xs mb-4" style="color:#FE2C55;">
-                    Nạp: Tiết kiệm khoảng 35% với phí dịch vụ của bên thứ ba thấp hơn.
-                </p>
+            <div id="packages" class="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_360px] gap-5 lg:gap-6 items-start">
 
-                <!-- Grid gói -->
-                <div id="package-grid" class="grid grid-cols-2 sm:grid-cols-4 gap-3"></div>
+                <div class="min-w-0">
+                    <!-- Hero tiêu đề -->
+                    <div class="fade-in relative overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-br from-white/[.07] to-white/[.015] px-5 py-6 sm:px-8 sm:py-8 mb-5">
+                        <div class="absolute -top-24 -left-16 w-72 h-72 rounded-full bg-cyan/20 blur-3xl pointer-events-none"></div>
+                        <div class="absolute -bottom-28 right-10 w-80 h-80 rounded-full bg-rose/25 blur-3xl pointer-events-none"></div>
+
+                        <!-- Cụm đồng xu trang trí -->
+                        <!-- mobile: nằm cạnh tiêu đề; từ sm: căn giữa bên phải -->
+                        <div class="absolute right-4 top-3 w-[96px] h-[66px] sm:right-10 sm:top-1/2 sm:-translate-y-1/2 sm:w-[170px] sm:h-[150px] pointer-events-none" aria-hidden="true">
+                            <span class="coin float-a absolute right-2 top-1 w-12 h-12 text-xl sm:w-[84px] sm:h-[84px] sm:text-[38px]">đ</span>
+                            <span class="coin float-b absolute left-1 bottom-0 sm:bottom-2 w-8 h-8 text-sm sm:w-14 sm:h-14 sm:text-2xl">đ</span>
+                            <span class="coin float-c absolute right-0 bottom-0 hidden sm:inline-flex sm:w-9 sm:h-9 sm:text-base">đ</span>
+                            <svg class="sparkle absolute left-6 top-2 w-3 h-3 sm:w-4 sm:h-4 text-cyan" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0l2.6 9.4L24 12l-9.4 2.6L12 24l-2.6-9.4L0 12l9.4-2.6z"/></svg>
+                            <svg class="sparkle absolute right-[-4px] top-[60%] sm:top-[52%] w-3 h-3 text-rose [animation-delay:-1.2s]" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0l2.6 9.4L24 12l-9.4 2.6L12 24l-2.6-9.4L0 12l9.4-2.6z"/></svg>
+                        </div>
+
+                        <div class="relative sm:pr-52">
+                            <h2 class="glitch glitch-anim inline-block text-[38px] sm:text-6xl font-black tracking-tight leading-none mb-5 sm:mb-4">Nhận Xu</h2>
+                            <p class="inline-flex items-start gap-2 text-[13px] sm:text-sm font-medium text-[#FF8FA3] bg-rose/10 border border-rose/25 rounded-2xl px-3 py-2">
+                                <i class="fa-solid fa-bolt text-rose mt-0.5"></i>
+                                <span>Nạp: Tiết kiệm khoảng 35% với phí dịch vụ của bên thứ ba thấp hơn.</span>
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Grid gói -->
+                    <div id="package-grid" class="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-3.5"></div>
+                </div>
 
                 <!-- Chi tiết đơn hàng -->
-                <div class="mt-5 bg-white rounded-2xl shadow-sm overflow-hidden">
-                    <div class="px-5 py-4">
-                        <p class="font-bold text-base">Chi tiết đơn hàng</p>
+                <aside class="fade-in lg:sticky lg:top-[116px]">
+                    <div class="relative glass rounded-3xl overflow-hidden">
+                        <div class="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-rose/70 to-transparent"></div>
+                        <div class="px-5 pt-5 pb-4 flex items-center gap-3">
+                            <span class="w-10 h-10 rounded-xl bg-rose/15 ring-1 ring-rose/30 text-rose flex items-center justify-center">
+                                <i class="fa-solid fa-receipt"></i>
+                            </span>
+                            <p class="font-extrabold text-lg">Chi tiết đơn hàng</p>
+                        </div>
+                        <div class="mx-5 rounded-2xl bg-black/25 border border-white/[.06] divide-y divide-white/[.06]">
+                            <div class="px-4 py-3.5 flex items-center justify-between gap-3">
+                                <span class="text-sm text-white/50">Số Xu đã chọn:</span>
+                                <span class="inline-flex items-center gap-2">
+                                    <span class="coin w-5 h-5 text-[9px]">đ</span>
+                                    <span id="order-xu" class="text-[15px] font-bold text-white whitespace-nowrap">—</span>
+                                </span>
+                            </div>
+                            <div class="px-4 py-3.5 flex items-center justify-between gap-3">
+                                <span class="text-sm text-white/50">Tổng tiền thanh toán:</span>
+                                <span id="order-price" class="whitespace-nowrap text-xl font-black text-rose [text-shadow:0_0_24px_rgba(254,44,85,.45)]">—</span>
+                            </div>
+                        </div>
+                        <div class="px-5 pb-5 pt-5">
+                            <button onclick="checkout()" class="btn-primary w-full font-extrabold py-4 rounded-2xl text-[17px] tracking-wide">
+                                Nạp
+                            </button>
+                            <p class="mt-4 text-center text-sm text-white/50">
+                                <i class="fa-solid fa-bolt text-yellow-400 mr-1"></i>Cần hỗ trợ trực tiếp?
+                                <a href="https://zalo.me" target="_blank" rel="noopener" class="inline-flex items-center gap-1 font-bold text-[#60A5FA] hover:text-[#93C5FD] hover:underline ml-1">
+                                    <img src="Icon_of_Zalo.svg.webp" alt="Zalo" class="w-4 h-4 object-contain">Chat Zalo hỗ trợ
+                                </a>
+                            </p>
+                        </div>
                     </div>
-                    <div class="border-t border-gray-100 px-5 py-3.5 flex items-center justify-between">
-                        <span class="text-sm text-gray-500">Số Xu đã chọn:</span>
-                        <span id="order-xu" class="text-sm font-semibold text-gray-900">—</span>
-                    </div>
-                    <div class="border-t border-gray-100 px-5 py-3.5 flex items-center justify-between">
-                        <span class="text-sm text-gray-500">Tổng tiền thanh toán:</span>
-                        <span id="order-price" class="text-base font-black" style="color:#FE2C55;">—</span>
-                    </div>
-                    <div class="px-5 pb-5 pt-3">
-                        <button onclick="checkout()" class="w-full text-white font-bold py-4 rounded-xl text-base tracking-wide hover:opacity-90 transition" style="background:#FE2C55;">
-                            Nạp
-                        </button>
-                        <p class="mt-4 text-center text-sm text-gray-500">
-                            <i class="fa-solid fa-bolt text-yellow-400 mr-1"></i>Cần hỗ trợ trực tiếp?
-                            <a href="https://zalo.me" target="_blank" rel="noopener" class="inline-flex items-center gap-1 font-bold text-[#0068FF] hover:underline ml-1">
-                                <img src="Icon_of_Zalo.svg.webp" alt="Zalo" class="w-4 h-4 object-contain">Chat Zalo hỗ trợ
-                            </a>
-                        </p>
-                    </div>
-                </div>
+                </aside>
             </div>
         </div>
     </main>
 
     <!-- Footer -->
-    <footer class="bg-white border-t border-gray-100 py-4 text-center text-xs text-gray-500 font-semibold tracking-wide">
-        © HỖ TRỢ LIÊN HỆ SỐ ĐIỆN THOẠI ZALO : 0568441367
+    <footer class="relative mt-10 border-t border-white/[.06] bg-black/30 py-5 pl-4 pr-[84px] sm:px-4 text-center text-xs text-white/45 font-semibold tracking-wide">
+        <div class="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/15 to-transparent"></div>
+        © HỖ TRỢ LIÊN HỆ SỐ ĐIỆN THOẠI ZALO : <span class="text-white/70">0568441367</span>
     </footer>
 
     <!-- Notice Modal -->
     <div id="notice-modal" class="modal" onclick="if(event.target===this) closeNoticeModal()">
-        <div class="modal-panel bg-white max-w-[640px] shadow-xl">
+        <div class="modal-panel panel-dark max-w-[640px]">
 
             <!-- Header -->
-            <div class="flex items-center gap-3 px-5 sm:px-7 pt-5 pb-4 border-b border-gray-200">
-                <div class="w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-red-50 flex items-center justify-center flex-shrink-0">
-                    <i class="fa-solid fa-triangle-exclamation text-[#FE2C55] text-base sm:text-lg"></i>
+            <div class="flex items-center gap-3 px-5 sm:px-7 pt-5 pb-4 border-b border-white/10">
+                <div class="w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-rose/15 ring-1 ring-rose/30 flex items-center justify-center flex-shrink-0">
+                    <i class="fa-solid fa-triangle-exclamation text-rose text-base sm:text-lg"></i>
                 </div>
                 <div class="flex-1 min-w-0">
-                    <p class="font-black text-[15px] sm:text-lg uppercase text-gray-900 leading-tight">MỘT SỐ LƯU Ý KHI SỬ DỤNG DỊCH VỤ</p>
-                    <p class="text-xs sm:text-sm text-gray-500 mt-0.5">Vui lòng đọc kỹ trước khi thực hiện giao dịch</p>
+                    <p class="font-black text-[15px] sm:text-lg uppercase text-white leading-tight">MỘT SỐ LƯU Ý KHI SỬ DỤNG DỊCH VỤ</p>
+                    <p class="text-xs sm:text-sm text-white/50 mt-0.5">Vui lòng đọc kỹ trước khi thực hiện giao dịch</p>
                 </div>
-                <button onclick="closeNoticeModal()" class="self-start w-8 h-8 -mr-2 -mt-1 flex items-center justify-center rounded-full text-gray-400 hover:bg-gray-100 hover:text-gray-600 text-2xl leading-none flex-shrink-0">&times;</button>
+                <button onclick="closeNoticeModal()" class="btn-x self-start -mr-2 -mt-1">&times;</button>
             </div>
 
             <div class="px-5 sm:px-7 pt-5 flex flex-col gap-4 text-[13px] sm:text-sm leading-relaxed">
 
-                <div class="rounded-2xl px-4 py-3.5 border bg-[#FFFBEB] border-[#FDE68A] text-[#78350F]">
-                    <p>Để hạn chế lỗi khi nạp xu và tăng giới hạn nạp, quý khách vui lòng <b>xác minh danh tính TikTok</b> trước khi thực hiện giao dịch.</p>
+                <div class="rounded-2xl px-4 py-3.5 border bg-amber-400/[.08] border-amber-300/25 text-amber-100/80">
+                    <p>Để hạn chế lỗi khi nạp xu và tăng giới hạn nạp, quý khách vui lòng <b class="text-amber-200">xác minh danh tính TikTok</b> trước khi thực hiện giao dịch.</p>
                     <a href="https://www.tiktok.com/kyc" target="_blank" rel="noopener"
-                        class="mt-2.5 inline-flex items-center gap-2 max-w-full px-4 py-1.5 rounded-xl bg-[#FE2C55] text-white font-bold text-[12.5px] sm:text-[13.5px] transition hover:opacity-90 break-all">
+                        class="btn-primary mt-2.5 inline-flex items-center gap-2 max-w-full px-4 py-1.5 rounded-xl font-bold text-[12.5px] sm:text-[13.5px] break-all">
                         <i class="fa-solid fa-link"></i> Link xác minh danh tính: https://www.tiktok.com/kyc
                     </a>
                 </div>
 
-                <div class="rounded-2xl px-4 py-3.5 border border-gray-200 bg-gray-50 text-gray-600">
-                    Một số tài khoản bị hủy giao dịch có thể do <b class="text-gray-800">TikTok giới hạn số lượng xu nạp trong ngày</b> hoặc chặn đầu thẻ trên hệ thống. Trường hợp này, quý khách vui lòng giảm số lượng xu nạp mỗi lần hoặc đổi máy chủ rồi thử lại.
+                <div class="rounded-2xl px-4 py-3.5 border border-white/10 bg-white/[.04] text-white/65">
+                    Một số tài khoản bị hủy giao dịch có thể do <b class="text-white">TikTok giới hạn số lượng xu nạp trong ngày</b> hoặc chặn đầu thẻ trên hệ thống. Trường hợp này, quý khách vui lòng giảm số lượng xu nạp mỗi lần hoặc đổi máy chủ rồi thử lại.
                 </div>
 
-                <div class="rounded-2xl px-4 py-3.5 border bg-[#FFF5F5] border-[#FECACA] text-[#B91C1C]">
-                    Nếu bị hoàn tiền liên tục khi tạo đơn vui lòng <b class="text-[#7F1D1D]">không SPAM tạo đơn mới</b> việc này có thể dẫn đến việc bị chặn nạp xu, hãy nhắn tin cho Admin tại mục liên hệ hỗ trợ để kiểm tra và xử lý.
+                <div class="rounded-2xl px-4 py-3.5 border bg-rose/[.08] border-rose/30 text-[#FF8FA3]">
+                    Nếu bị hoàn tiền liên tục khi tạo đơn vui lòng <b class="text-[#FFC2CE]">không SPAM tạo đơn mới</b> việc này có thể dẫn đến việc bị chặn nạp xu, hãy nhắn tin cho Admin tại mục liên hệ hỗ trợ để kiểm tra và xử lý.
                 </div>
 
-                <div class="rounded-2xl px-4 py-3.5 flex items-center justify-between gap-3 border bg-[#EFF6FF] border-[#BFDBFE]">
+                <div class="rounded-2xl px-4 py-3.5 flex items-center justify-between gap-3 border bg-blue-500/10 border-blue-400/25">
                     <div class="min-w-0">
-                        <p class="font-bold text-[#1E3A8A]">Liên hệ hỗ trợ qua Zalo:</p>
-                        <p class="text-base sm:text-lg font-black text-[#1D4ED8]">0568441367</p>
+                        <p class="font-bold text-[#BFDBFE]">Liên hệ hỗ trợ qua Zalo:</p>
+                        <p class="text-base sm:text-lg font-black text-[#60A5FA]">0568441367</p>
                     </div>
                     <a href="https://zalo.me" target="_blank" rel="noopener"
-                        class="flex-shrink-0 inline-flex items-center gap-2 text-white font-bold px-4 py-2 rounded-xl transition hover:opacity-90 bg-[#2563EB]">
+                        class="flex-shrink-0 inline-flex items-center gap-2 text-white font-bold px-4 py-2 rounded-xl transition hover:bg-[#1D4ED8] bg-[#2563EB] shadow-lg shadow-blue-600/30">
                         <i class="fa-solid fa-comment-dots"></i> Chat Zalo
                     </a>
                 </div>
 
-                <p class="text-center text-gray-800 font-bold py-2">Xin cảm ơn quý khách đã sử dụng dịch vụ.</p>
+                <p class="text-center text-white/90 font-bold py-2">Xin cảm ơn quý khách đã sử dụng dịch vụ.</p>
             </div>
 
             <div class="px-5 sm:px-7 pt-4 pb-5 sm:pb-6">
-                <div class="border-t border-gray-200 pt-4">
+                <div class="border-t border-white/10 pt-4">
                     <button onclick="closeNoticeModal()"
-                        class="w-full text-white font-bold py-3 rounded-xl text-[15px] transition hover:opacity-90 bg-[#FE2C55]">
+                        class="btn-primary w-full font-bold py-3 rounded-xl text-[15px]">
                         Đã hiểu &amp; Đóng
                     </button>
                 </div>
@@ -283,24 +461,52 @@
         </div>
     </div>
 
+    <!-- Modal: tra ID không ra (nội dung đổi theo từng trường hợp, xem LOOKUP_VARIANTS) -->
+    <div id="lookup-modal" class="modal" onclick="if(event.target===this) closeModal('lookup-modal')">
+        <div class="modal-panel panel-dark max-w-[420px] relative">
+            <button onclick="closeModal('lookup-modal')" class="btn-x absolute right-3 top-3" aria-label="Đóng">&times;</button>
+
+            <div class="px-6 pt-8 pb-5 text-center">
+                <div id="lookup-icon" class="w-16 h-16 mx-auto mb-4 rounded-full ring-1 flex items-center justify-center text-2xl"><i></i></div>
+                <h3 id="lookup-title" class="text-lg sm:text-xl font-extrabold text-white leading-snug break-words"></h3>
+                <p id="lookup-desc" class="mt-2 text-sm text-white/60 leading-relaxed"></p>
+            </div>
+
+            <ul id="lookup-tips" class="mx-5 sm:mx-6 rounded-2xl bg-white/[.04] border border-white/[.07] divide-y divide-white/[.06] text-[13px] sm:text-sm text-white/75 leading-snug">
+                <li class="flex gap-3 px-4 py-3"><i class="fa-solid fa-at text-cyan mt-0.5 w-4 text-center flex-shrink-0"></i><span>Nhập <b class="text-white">username</b> (dạng @ten.cua_ban), không phải tên hiển thị.</span></li>
+                <li class="flex gap-3 px-4 py-3"><i class="fa-solid fa-spell-check text-cyan mt-0.5 w-4 text-center flex-shrink-0"></i><span>Giữ đúng dấu chấm (&nbsp;.&nbsp;) và gạch dưới (&nbsp;_&nbsp;), không có khoảng trắng.</span></li>
+                <li class="flex gap-3 px-4 py-3"><i class="fa-solid fa-mobile-screen-button text-cyan mt-0.5 w-4 text-center flex-shrink-0"></i><span>Xem ID trong app TikTok: <b class="text-white">Hồ sơ</b> → dòng @ ngay dưới ảnh đại diện.</span></li>
+                <li class="flex gap-3 px-4 py-3"><i class="fa-solid fa-clock-rotate-left text-cyan mt-0.5 w-4 text-center flex-shrink-0"></i><span>Tài khoản vừa đổi ID hoặc đang bị hạn chế có thể chưa tra được ngay.</span></li>
+            </ul>
+
+            <div class="px-5 sm:px-6 pt-5 pb-6 flex flex-col gap-2.5">
+                <button id="lookup-primary" onclick="onLookupPrimary()" class="btn-primary w-full font-bold py-3 rounded-xl text-[15px]"></button>
+                <a id="lookup-zalo" href="https://zalo.me" target="_blank" rel="noopener"
+                    class="w-full inline-flex items-center justify-center gap-2 py-3 rounded-xl text-[14px] font-semibold text-white/85 bg-white/[.06] border border-white/10 hover:bg-white/10 hover:text-white transition">
+                    <img src="Icon_of_Zalo.svg.webp" alt="" class="w-5 h-5 object-contain">Nhờ Admin hỗ trợ qua Zalo
+                </a>
+            </div>
+        </div>
+    </div>
+
     <!-- Lucky Spin Modal -->
     <div id="spin-modal" class="modal" onclick="if(event.target===this) closeSpinModal()">
-        <div class="modal-panel bg-white max-w-[420px] sm:max-w-[600px] shadow-2xl">
+        <div class="modal-panel panel-dark max-w-[420px] sm:max-w-[600px]">
             <!-- Header -->
-            <div class="relative px-10 py-2.5 sm:py-4 text-center border-b border-gray-100">
-                <button onclick="closeSpinModal()" class="absolute right-3 sm:right-4 top-1/2 -translate-y-1/2 w-8 h-8 flex items-center justify-center rounded-full text-gray-400 hover:bg-gray-100 hover:text-gray-700 text-2xl leading-none">&times;</button>
-                <h3 class="text-lg sm:text-2xl font-black inline-flex items-center gap-2"><span data-icon="gift" class="w-5 h-5 sm:w-6 sm:h-6 text-[#FE2C55]"></span>Vòng Quay May Mắn</h3>
+            <div class="relative px-10 py-3 sm:py-4 text-center border-b border-white/10">
+                <button onclick="closeSpinModal()" class="btn-x absolute right-3 sm:right-4 top-1/2 -translate-y-1/2">&times;</button>
+                <h3 class="text-lg sm:text-2xl font-black inline-flex items-center gap-2"><span data-icon="gift" class="w-5 h-5 sm:w-6 sm:h-6 text-rose"></span><span class="glitch">Vòng Quay May Mắn</span></h3>
             </div>
 
             <!-- Chưa đăng nhập -->
             <div id="spin-require-login" class="hidden px-6 py-8 text-center">
-                <div class="w-16 h-16 mx-auto mb-4 rounded-full bg-[#FFF0F3] flex items-center justify-center">
-                    <span data-icon="lock" class="w-8 h-8 text-[#FE2C55]"></span>
+                <div class="w-16 h-16 mx-auto mb-4 rounded-full bg-rose/15 ring-1 ring-rose/30 flex items-center justify-center shadow-[0_0_30px_rgba(254,44,85,.3)]">
+                    <span data-icon="lock" class="w-8 h-8 text-rose"></span>
                 </div>
-                <p class="text-gray-700 font-semibold mb-1">Bạn chưa đăng nhập!</p>
-                <p class="text-gray-500 text-sm mb-5">Vui lòng nhập TikTok ID của bạn trước khi tham gia vòng quay.</p>
+                <p class="text-white font-semibold mb-1">Bạn chưa đăng nhập!</p>
+                <p class="text-white/50 text-sm mb-5">Vui lòng nhập TikTok ID của bạn trước khi tham gia vòng quay.</p>
                 <button onclick="closeSpinModal(); document.getElementById('tiktok-id-input').focus();"
-                    class="w-full text-white font-bold py-3 rounded-xl transition hover:opacity-90" style="background:#FE2C55;">
+                    class="btn-primary w-full font-bold py-3 rounded-xl">
                     Đăng nhập ngay
                 </button>
             </div>
@@ -308,26 +514,26 @@
             <!-- Đã đăng nhập -->
             <div id="spin-content" class="hidden px-4 py-3 sm:px-6 sm:py-5">
                 <!-- Điều kiện -->
-                <div class="rounded-xl px-3 py-2 sm:px-4 sm:py-3 mb-2 sm:mb-3 text-[12px] sm:text-sm leading-snug sm:leading-relaxed bg-[#F5F0FF] border border-[#E0D0FF]">
-                    <p class="text-gray-700 mb-0.5"><span data-icon="target" class="w-3.5 h-3.5 sm:w-4 sm:h-4 text-purple-600 mr-1"></span><b>Điều kiện nhận lượt quay:</b> Mỗi <b class="text-purple-600">5.000 Xu</b> nạp thành công sẽ nhận ngay <b class="text-purple-600">1 lượt quay</b>.</p>
-                    <p class="text-gray-700"><span data-icon="ticket" class="w-3.5 h-3.5 sm:w-4 sm:h-4 text-purple-600 mr-1"></span>Số lượt quay hiện có của bạn: <b id="spin-count" class="text-purple-600">0 lượt</b></p>
+                <div class="rounded-xl px-3 py-2 sm:px-4 sm:py-3 mb-2 sm:mb-3 text-[12px] sm:text-sm leading-snug sm:leading-relaxed bg-purple-500/10 border border-purple-400/25">
+                    <p class="text-white/75 mb-0.5"><span data-icon="target" class="w-3.5 h-3.5 sm:w-4 sm:h-4 text-purple-300 mr-1"></span><b class="text-white">Điều kiện nhận lượt quay:</b> Mỗi <b class="text-purple-300">5.000 Xu</b> nạp thành công sẽ nhận ngay <b class="text-purple-300">1 lượt quay</b>.</p>
+                    <p class="text-white/75"><span data-icon="ticket" class="w-3.5 h-3.5 sm:w-4 sm:h-4 text-purple-300 mr-1"></span>Số lượt quay hiện có của bạn: <b id="spin-count" class="text-purple-300">0 lượt</b></p>
                 </div>
 
                 <!-- Kết quả / placeholder -->
-                <div id="spin-result-box" class="border-2 border-dashed border-gray-200 rounded-xl px-3 py-2 mb-2 sm:mb-3 min-h-[52px] sm:min-h-[72px] flex items-center justify-center transition-colors text-[12.5px] sm:text-[15px]">
-                    <p class="text-gray-400 text-center">Bấm nút quay để xem vận may như thế nào ^^</p>
+                <div id="spin-result-box" class="border-2 border-dashed border-white/15 rounded-xl px-3 py-2 mb-2 sm:mb-3 min-h-[52px] sm:min-h-[72px] flex items-center justify-center transition-colors text-[12.5px] sm:text-[15px]">
+                    <p class="text-white/40 text-center">Bấm nút quay để xem vận may như thế nào ^^</p>
                 </div>
 
                 <!-- Nút quay -->
                 <button id="spin-btn" onclick="doSpin()"
-                    class="w-full text-white font-black py-2.5 sm:py-3.5 rounded-xl text-[15px] sm:text-lg tracking-widest shadow-lg transition hover:opacity-90 mb-3 sm:mb-4"
+                    class="btn-primary w-full font-black py-2.5 sm:py-3.5 rounded-xl text-[15px] sm:text-lg tracking-widest mb-3 sm:mb-4"
                     style="background:linear-gradient(135deg,#9B59B6 0%,#FE2C55 100%);">
                     QUAY NGAY
                 </button>
 
                 <!-- Bảng tỉ lệ -->
-                <p class="text-[12px] sm:text-sm font-bold mb-1.5 sm:mb-2 flex items-center gap-2">
-                    <span class="inline-block w-2 h-2 rounded-full bg-[#FE2C55]"></span>
+                <p class="text-[12px] sm:text-sm font-bold mb-1.5 sm:mb-2 flex items-center gap-2 text-white/90">
+                    <span class="inline-block w-2 h-2 rounded-full bg-rose shadow-[0_0_8px_rgba(254,44,85,.8)]"></span>
                     Bảng tỷ lệ % trúng thưởng công khai:
                 </p>
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-1 sm:gap-1.5" id="spin-prizes-table"></div>
@@ -335,10 +541,10 @@
                 <!-- Lịch sử -->
                 <div class="[@media(max-height:719px)]:hidden">
                 <div id="spin-history-wrap" class="hidden mt-2.5">
-                    <p class="text-[12px] font-bold mb-1 flex items-center gap-2">
-                        <i class="fa-solid fa-clock-rotate-left text-purple-500"></i> Lịch sử vòng quay gần đây:
+                    <p class="text-[12px] font-bold mb-1 flex items-center gap-2 text-white/90">
+                        <i class="fa-solid fa-clock-rotate-left text-purple-400"></i> Lịch sử vòng quay gần đây:
                     </p>
-                    <ul id="spin-history-list" class="space-y-1 text-[11.5px] text-gray-700"></ul>
+                    <ul id="spin-history-list" class="space-y-1 text-[11.5px] text-white/75"></ul>
                 </div>
                 </div>
             </div>
@@ -346,39 +552,42 @@
     </div>
 
     <!-- Nút nổi góc phải -->
-    <div class="fixed right-4 bottom-4 z-50 flex flex-col items-end gap-2">
+    <div class="fixed right-4 bottom-4 z-50 flex flex-col items-end gap-2.5">
         <!-- Hộp quà -->
         <button onclick="openSpinModal()" title="Vòng Quay May Mắn"
-            class="relative w-14 h-14 rounded-full brand-gradient text-white shadow-lg flex items-center justify-center hover:scale-105 transition">
-            <i class="fa-solid fa-gift text-xl"></i>
-            <span class="absolute -top-1 -right-1 bg-white text-rose text-[10px] font-black px-1.5 py-0.5 rounded-full shadow">HOT</span>
+            class="relative w-14 h-14 rounded-full brand-gradient text-white shadow-[0_10px_30px_-6px_rgba(254,44,85,.7)] flex items-center justify-center hover:scale-110 transition">
             <span class="absolute inset-0 rounded-full brand-gradient animate-ping opacity-30"></span>
+            <i class="relative fa-solid fa-gift text-xl drop-shadow"></i>
+            <span class="absolute -top-1 -right-1 bg-white text-rose text-[10px] font-black px-1.5 py-0.5 rounded-full shadow">HOT</span>
         </button>
         <!-- Zalo -->
         <a href="https://zalo.me" target="_blank" rel="noopener" title="Liên hệ Zalo"
-            class="w-14 h-14 rounded-full bg-white shadow-lg flex items-center justify-center hover:scale-105 transition ring-1 ring-gray-200">
+            class="w-14 h-14 rounded-full bg-white shadow-[0_10px_30px_-8px_rgba(37,99,235,.6)] flex items-center justify-center hover:scale-110 transition ring-2 ring-white/20">
             <img src="Icon_of_Zalo.svg.webp" alt="Zalo" class="w-9 h-9 object-contain">
         </a>
         <!-- Lịch sử trúng thưởng -->
         <button onclick="openWinHistoryModal()"
-            class="flex items-center gap-2 bg-white border border-gray-200 shadow-lg rounded-full px-3 py-2.5 sm:px-4 text-sm font-semibold text-gray-700 hover:shadow-xl transition hover:border-purple-500 hover:text-purple-600">
-            <i class="fa-solid fa-clock-rotate-left text-purple-500"></i>
+            class="flex items-center gap-2 bg-[#1B1B25]/85 backdrop-blur-xl border border-white/10 shadow-xl shadow-black/50 rounded-full px-3.5 py-2.5 sm:px-4 text-sm font-semibold text-white/85 hover:text-white hover:border-purple-400/60 transition">
+            <i class="fa-solid fa-clock-rotate-left text-purple-400"></i>
             <span class="hidden sm:inline">Lịch sử vòng quay</span>
         </button>
     </div>
 
     <!-- Lịch Sử Trúng Thưởng Modal -->
     <div id="win-history-modal" class="modal" onclick="if(event.target===this) closeWinHistoryModal()">
-        <div class="modal-panel bg-white max-w-lg shadow-2xl px-4 py-4 sm:px-6 sm:py-5">
-            <div class="flex items-center justify-between pb-3 border-b border-gray-200">
-                <h3 class="text-lg sm:text-[20px] font-bold text-gray-900 flex items-center gap-2.5">
-                    <i class="fa-solid fa-clock-rotate-left text-[#9333EA]"></i> Lịch Sử Trúng Thưởng
+        <div class="modal-panel panel-dark max-w-lg px-4 py-4 sm:px-6 sm:py-5">
+            <div class="flex items-center justify-between pb-3 border-b border-white/10">
+                <h3 class="text-lg sm:text-[20px] font-bold text-white flex items-center gap-2.5">
+                    <span class="w-9 h-9 rounded-xl bg-purple-500/15 ring-1 ring-purple-400/30 flex items-center justify-center">
+                        <i class="fa-solid fa-clock-rotate-left text-purple-300 text-[15px]"></i>
+                    </span>
+                    Lịch Sử Trúng Thưởng
                 </h3>
-                <button onclick="closeWinHistoryModal()" class="w-8 h-8 flex items-center justify-center rounded-full text-gray-400 hover:bg-gray-100 hover:text-gray-700 text-2xl leading-none">&times;</button>
+                <button onclick="closeWinHistoryModal()" class="btn-x">&times;</button>
             </div>
             <div id="win-history-body" class="py-5 max-h-[55dvh] overflow-y-auto"></div>
             <div class="flex justify-end">
-                <button onclick="closeWinHistoryModal()" class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold px-5 py-2.5 rounded-xl transition">Đóng</button>
+                <button onclick="closeWinHistoryModal()" class="bg-white/10 hover:bg-white/15 border border-white/10 text-white font-bold px-5 py-2.5 rounded-xl transition">Đóng</button>
             </div>
         </div>
     </div>
@@ -389,10 +598,10 @@
         #pm-body { display: grid; grid-template-columns: minmax(0, 1fr); gap: 10px; padding: 12px; }
         #pm-info-col { min-width: 0; display: flex; flex-direction: column; gap: 10px; }
         /* QR co theo chiều cao màn hình để cả modal vừa 1 màn hình */
-        #pm-qr-img { display: block; margin: 0 auto; width: auto; max-width: 100%; height: min(250px, 32dvh); object-fit: contain; }
+        #pm-qr-img { display: block; margin: 0 auto; width: auto; max-width: 100%; height: min(330px, 42dvh); object-fit: contain; }
         @media (min-width: 640px) {
-            #payment-modal .modal-panel { max-width: 680px; }
-            #pm-body { grid-template-columns: 250px minmax(0, 1fr); gap: 16px; padding: 16px; }
+            #payment-modal .modal-panel { max-width: 840px; }
+            #pm-body { grid-template-columns: 330px minmax(0, 1fr); gap: 20px; padding: 20px; }
             #pm-qr-img { width: 100%; height: auto; max-height: calc(100dvh - 140px); }
         }
         /* màn hình thấp (điện thoại xoay ngang): thu gọn để không phải cuộn */
@@ -402,7 +611,7 @@
             #payment-modal .pm-row { padding-top: 5px; padding-bottom: 5px; }
             #payment-modal .pm-btn { padding-top: 10px; padding-bottom: 10px; }
             #pm-body, #pm-info-col { gap: 8px; }
-            #pm-qr-img { height: 26dvh; }
+            #pm-qr-img { height: 34dvh; }
         }
         @media (min-width: 640px) and (max-height: 520px) {
             #payment-modal { padding: 6px; }
@@ -417,63 +626,65 @@
         }
     </style>
     <div id="payment-modal" class="modal" onclick="if(event.target===this) closePaymentModal()">
-        <div class="modal-panel bg-white shadow-2xl">
+        <div class="modal-panel panel-dark">
 
             <!-- Header -->
-            <div class="pm-head relative px-10 py-3 text-center border-b border-gray-100">
-                <button onclick="closePaymentModal()" class="absolute right-3 top-1/2 -translate-y-1/2 w-8 h-8 flex items-center justify-center rounded-full text-gray-400 hover:bg-gray-100 hover:text-gray-600 text-2xl leading-none">&times;</button>
-                <h3 class="text-[17px] font-bold text-gray-900">Thanh toán đơn hàng</h3>
-                <p class="text-[12px] text-gray-500">Quét mã QR bằng App Ngân hàng hoặc Ví điện tử</p>
+            <div class="pm-head relative px-10 py-3 sm:py-4 text-center border-b border-white/10">
+                <button onclick="closePaymentModal()" class="btn-x absolute right-3 top-1/2 -translate-y-1/2">&times;</button>
+                <h3 class="text-[17px] sm:text-xl font-bold text-white">Thanh toán đơn hàng</h3>
+                <p class="text-[12px] sm:text-[13.5px] text-white/50">Quét mã QR bằng App Ngân hàng hoặc Ví điện tử</p>
             </div>
 
             <div id="pm-body">
-                <!-- QR -->
-                <div class="flex items-center justify-center rounded-xl border border-gray-200 bg-white p-2">
-                    <img id="pm-qr-img" src="QR2.png" alt="QR thanh toán">
+                <!-- QR (giữ nền trắng để app ngân hàng quét được) -->
+                <div class="flex items-center justify-center rounded-2xl p-[2px] brand-gradient shadow-[0_0_40px_-8px_rgba(254,44,85,.5)]">
+                    <div class="w-full h-full flex items-center justify-center rounded-[14px] bg-white p-2">
+                        <img id="pm-qr-img" src="QR2.png" alt="QR thanh toán">
+                    </div>
                 </div>
 
                 <div id="pm-info-col">
                     <!-- Thông tin chuyển khoản -->
-                    <div class="rounded-xl border border-gray-200 bg-gray-50/60 text-[13px] divide-y divide-gray-100">
-                        <div class="pm-row flex justify-between items-center gap-3 px-3 py-2">
-                            <span class="text-gray-500 flex-shrink-0">Ngân hàng:</span>
-                            <span class="font-semibold text-gray-900 text-right">MBBank</span>
+                    <div class="rounded-xl border border-white/10 bg-black/25 text-[13px] sm:text-[15px] divide-y divide-white/[.06]">
+                        <div class="pm-row flex justify-between items-center gap-3 px-3 py-2 sm:px-4 sm:py-3">
+                            <span class="text-white/50 flex-shrink-0">Ngân hàng:</span>
+                            <span class="font-semibold text-white text-right">VIB</span>
                         </div>
-                        <div class="pm-row flex justify-between items-center gap-3 px-3 py-2">
-                            <span class="text-gray-500 flex-shrink-0">Số tài khoản:</span>
-                            <span class="font-semibold text-gray-900 text-right">3032479999</span>
+                        <div class="pm-row flex justify-between items-center gap-3 px-3 py-2 sm:px-4 sm:py-3">
+                            <span class="text-white/50 flex-shrink-0">Số tài khoản:</span>
+                            <span class="font-semibold text-white text-right tracking-wide">061348446</span>
                         </div>
-                        <div class="pm-row flex justify-between items-center gap-3 px-3 py-2">
-                            <span class="text-gray-500 flex-shrink-0">Chủ tài khoản:</span>
-                            <span class="font-bold text-gray-900 text-right">MB VIET ANH</span>
+                        <div class="pm-row flex justify-between items-center gap-3 px-3 py-2 sm:px-4 sm:py-3">
+                            <span class="text-white/50 flex-shrink-0">Chủ tài khoản:</span>
+                            <span class="font-bold text-white text-right">MAI NHẬT TÂN</span>
                         </div>
-                        <div class="pm-row flex justify-between items-center gap-3 px-3 py-2">
-                            <span class="text-gray-500 flex-shrink-0">Số tiền:</span>
-                            <span id="payment-amount" class="font-black text-[15px] text-right" style="color:#FE2C55;"></span>
+                        <div class="pm-row flex justify-between items-center gap-3 px-3 py-2 sm:px-4 sm:py-3">
+                            <span class="text-white/50 flex-shrink-0">Số tiền:</span>
+                            <span id="payment-amount" class="font-black text-[15px] sm:text-lg text-right text-rose [text-shadow:0_0_18px_rgba(254,44,85,.45)]"></span>
                         </div>
-                        <div class="pm-row flex justify-between items-center gap-3 px-3 py-2">
-                            <span class="text-gray-500 min-w-0">Nội dung chuyển khoản:</span>
-                            <span id="payment-content" class="font-bold text-[12.5px] text-[#2563EB] bg-[#EFF6FF] border border-[#BFDBFE] px-2 py-0.5 rounded-md whitespace-nowrap"></span>
+                        <div class="pm-row flex justify-between items-center gap-3 px-3 py-2 sm:px-4 sm:py-3">
+                            <span class="text-white/50 min-w-0">Nội dung chuyển khoản:</span>
+                            <span id="payment-content" class="font-bold text-[12.5px] sm:text-sm text-[#93C5FD] bg-blue-500/15 border border-blue-400/30 px-2 py-0.5 rounded-md whitespace-nowrap"></span>
                         </div>
                     </div>
 
                     <!-- Upload bill -->
-                    <div class="rounded-xl px-3 py-2.5 bg-[#EFF6FF] border border-[#BFDBFE]">
-                        <p class="text-[13px] font-bold text-[#1d4ed8] mb-1.5">
+                    <div class="rounded-xl px-3 py-2.5 sm:px-4 sm:py-3.5 bg-blue-500/10 border border-blue-400/25">
+                        <p class="text-[13px] sm:text-[15px] font-bold text-[#93C5FD] mb-1.5 sm:mb-2.5">
                             <i class="fa-solid fa-file-arrow-up mr-1"></i>Tải ảnh chụp biên lai (Bill) chuyển tiền:
                         </p>
                         <div class="flex items-center gap-2 min-w-0">
-                            <label class="cursor-pointer text-white font-bold text-[12.5px] px-3 py-1.5 rounded-lg hover:opacity-90 transition flex-shrink-0 bg-[#FE2C55]">
+                            <label class="btn-primary cursor-pointer font-bold text-[12.5px] sm:text-sm px-3 py-1.5 sm:px-4 sm:py-2 rounded-lg flex-shrink-0">
                                 Chọn tệp
                                 <input type="file" accept="image/*" class="hidden" onchange="onBillSelected(this)">
                             </label>
-                            <span id="bill-filename" class="text-[12.5px] text-gray-500 truncate min-w-0">Không có tệp nào được chọn</span>
+                            <span id="bill-filename" class="text-[12.5px] sm:text-sm text-white/50 truncate min-w-0">Không có tệp nào được chọn</span>
                         </div>
-                        <p class="pm-hint text-[11.5px] italic text-gray-500 mt-1.5">Có thể tải bill chuyển khoản thành công để tránh bị lỗi!</p>
+                        <p class="pm-hint text-[11.5px] sm:text-[13px] italic text-white/40 mt-1.5 sm:mt-2">Có thể tải bill chuyển khoản thành công để tránh bị lỗi!</p>
                     </div>
 
                     <button onclick="confirmPayment()"
-                        class="pm-btn mt-auto w-full text-white font-bold py-3 rounded-xl text-[15px] hover:opacity-90 transition flex items-center justify-center gap-2 bg-[#FE2C55]">
+                        class="pm-btn btn-primary mt-auto w-full font-bold py-3 sm:py-4 rounded-xl text-[15px] sm:text-[17px] flex items-center justify-center gap-2">
                         <i class="fa-solid fa-paper-plane"></i>Đã hoàn tất thanh toán
                     </button>
                 </div>
@@ -482,8 +693,8 @@
     </div>
 
     <!-- Toast -->
-    <div id="toast" class="fixed bottom-5 left-1/2 -translate-x-1/2 z-[70] hidden">
-        <div class="bg-ink text-white text-sm px-4 py-2.5 rounded-xl shadow-lg flex items-center gap-2">
+    <div id="toast" class="fixed bottom-5 left-1/2 -translate-x-1/2 z-[70] hidden w-max max-w-[calc(100vw-32px)]">
+        <div class="rise bg-[#1B1B25]/95 backdrop-blur-xl border border-white/10 text-white text-sm px-4 py-3 rounded-2xl shadow-2xl shadow-black/60 flex items-center gap-2.5">
             <i class="fa-solid fa-circle-check text-cyan"></i> <span id="toast-msg"></span>
         </div>
     </div>
@@ -504,14 +715,15 @@
             loader: '<path d="M21 12a9 9 0 1 1-6.219-8.56"/>',
             frown: '<circle cx="12" cy="12" r="10"/><path d="M16 16s-1.5-2-4-2-4 2-4 2"/><path d="M9 9h.01"/><path d="M15 9h.01"/>',
             trophy: '<path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/>',
+            check: '<path d="M20 6 9 17l-5-5"/>',
         };
         function svgIcon(name, cls = 'w-4 h-4') {
             return `<svg class="${cls} inline-block flex-shrink-0 align-[-0.15em]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICON_PATHS[name]}</svg>`;
         }
         function prizeIcon(label, lose, size = 'w-3.5 h-3.5') {
-            if (lose) return svgIcon('circle-x', size + ' text-red-500');
-            if (label.startsWith('Giảm')) return svgIcon('tag', size + ' text-sky-500');
-            return svgIcon('gift', size + ' text-amber-500');
+            if (lose) return svgIcon('circle-x', size + ' text-[#FF6B85]');
+            if (label.startsWith('Giảm')) return svgIcon('tag', size + ' text-sky-400');
+            return svgIcon('gift', size + ' text-amber-400');
         }
         document.querySelectorAll('[data-icon]').forEach(el => {
             el.outerHTML = svgIcon(el.dataset.icon, el.getAttribute('class') || undefined);
@@ -531,18 +743,21 @@
         // ---- Render packages ----
         let selected = null;
         const grid = document.getElementById('package-grid');
+        const CHECK_BADGE = `<span class="pkg-check absolute bottom-3 right-3 w-5 h-5 rounded-full bg-rose flex items-center justify-center text-white shadow-lg shadow-rose/50">${svgIcon('check', 'w-3 h-3')}</span>`;
 
         packages.forEach((p, i) => {
             const el = document.createElement('button');
-            el.className = 'relative text-left bg-white rounded-2xl p-4 shadow-sm border-2 border-transparent focus:outline-none transition hover:shadow-md';
+            el.className = 'pkg pop text-left p-4 focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan/60';
+            el.style.animationDelay = (i * 45) + 'ms';
             el.dataset.i = i;
             el.innerHTML = `
-                ${p.popular ? '<span class="absolute -top-2 right-2 bg-[#FE2C55] text-white text-[10px] font-bold px-2 py-0.5 rounded-full whitespace-nowrap shadow inline-flex items-center gap-0.5">Phổ biến ' + svgIcon('flame', 'w-3 h-3') + '</span>' : ''}
-                <div class="flex items-center gap-2 mb-2">
-                    <span class="inline-flex items-center justify-center w-7 h-7 rounded-full text-white text-xs font-black shadow-sm" style="background:linear-gradient(135deg,#FFD700,#FFA500);">đ</span>
-                    <span class="text-base font-black text-gray-900">${p.xu.toLocaleString('vi-VN')} Xu</span>
+                ${p.popular ? '<span class="absolute -top-2.5 right-3 z-10 bg-rose text-white text-[10px] font-bold px-2.5 py-0.5 rounded-full whitespace-nowrap shadow-lg shadow-rose/40 inline-flex items-center gap-0.5">Phổ biến ' + svgIcon('flame', 'w-3 h-3') + '</span>' : ''}
+                <div class="flex items-center gap-2.5 mb-2.5">
+                    <span class="coin w-8 h-8 text-[13px]">đ</span>
+                    <span class="text-base lg:text-lg font-extrabold text-white tracking-tight">${p.xu.toLocaleString('vi-VN')} Xu</span>
                 </div>
-                <p class="text-sm text-gray-400">${p.price}</p>
+                <p class="pkg-price text-sm text-white/45 font-medium transition-colors pr-6">${p.price}</p>
+                ${CHECK_BADGE}
             `;
             el.onclick = () => selectPackage(i, el);
             grid.appendChild(el);
@@ -550,31 +765,37 @@
 
         // Thêm ô Tùy chỉnh
         const custom = document.createElement('div');
-        custom.className = 'relative text-left bg-white rounded-2xl p-4 shadow-sm border-2 border-transparent transition hover:shadow-md cursor-pointer';
+        custom.className = 'pkg pop text-left p-4';
+        custom.style.animationDelay = (packages.length * 45) + 'ms';
         custom.id = 'custom-card';
         custom.innerHTML = `
-            <div class="flex items-center gap-2 mb-1">
-                <span class="inline-flex items-center justify-center w-7 h-7 rounded-full text-white text-xs shadow-sm" style="background:linear-gradient(135deg,#25F4EE,#00bcd4);">
-                    <i class="fa-solid fa-sliders text-[11px]"></i>
+            <div class="flex items-center gap-2.5 mb-2">
+                <span class="inline-flex flex-shrink-0 items-center justify-center w-8 h-8 rounded-full text-[#062A2A] shadow-[0_4px_14px_rgba(37,244,238,.35)]" style="background:linear-gradient(135deg,#25F4EE,#00bcd4);">
+                    <i class="fa-solid fa-sliders text-[12px]"></i>
                 </span>
-                <span class="text-base font-black text-gray-900">Tùy chỉnh</span>
+                <span class="text-base lg:text-lg font-extrabold text-white tracking-tight">Tùy chỉnh</span>
             </div>
-            <p class="text-xs" style="color:#25c4c4;">1.000 - 2.000.000 Xu</p>
+            <p class="text-xs text-cyan/90 font-medium">1.000 - 2.000.000 Xu</p>
             <div id="custom-input-wrap" class="hidden mt-3">
                 <input id="custom-xu-input" type="number" min="1000" max="2000000" step="1000"
                     placeholder="Từ 1.000 - 2.000.000"
-                    class="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-[#FE2C55] text-gray-700 placeholder:text-gray-300"
+                    class="w-full bg-black/40 border border-white/10 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-rose/70 focus:shadow-[0_0_0_4px_rgba(254,44,85,.15)] text-white placeholder:text-white/30 transition"
                     onclick="event.stopPropagation()"
                     oninput="onCustomInput(this.value)">
             </div>
+            ${CHECK_BADGE.replace('bottom-3 right-3', 'top-3 right-3')}
         `;
         custom.onclick = () => selectCustom();
         grid.appendChild(custom);
 
+        function markSelected(card) {
+            document.querySelectorAll('#package-grid .pkg').forEach(b => b.classList.remove('is-selected'));
+            card.classList.add('is-selected');
+        }
+
         function selectCustom() {
             selected = 'custom';
-            document.querySelectorAll('#package-grid button').forEach(b => { b.style.borderColor = 'transparent'; });
-            document.getElementById('custom-card').style.borderColor = '#FE2C55';
+            markSelected(document.getElementById('custom-card'));
             document.getElementById('custom-input-wrap').classList.remove('hidden');
             const val = document.getElementById('custom-xu-input').value;
             if (val) onCustomInput(val);
@@ -589,7 +810,7 @@
             const xu = parseInt(val);
             if (!xu || xu < 1000) return;
             selected = 'custom';
-            document.getElementById('custom-card').style.borderColor = '#FE2C55';
+            markSelected(document.getElementById('custom-card'));
             // Giá tạm tính: ~259đ/xu
             const price = Math.round(xu * 259);
             document.getElementById('order-xu').textContent = `${xu.toLocaleString('vi-VN')} XU`;
@@ -598,10 +819,8 @@
 
         function selectPackage(i, el) {
             selected = i;
-            document.querySelectorAll('#package-grid button').forEach(b => { b.style.borderColor = 'transparent'; });
-            document.getElementById('custom-card').style.borderColor = 'transparent';
+            markSelected(el);
             document.getElementById('custom-input-wrap').classList.add('hidden');
-            el.style.borderColor = '#FE2C55';
             const p = packages[i];
             document.getElementById('order-xu').textContent = `${p.xu.toLocaleString('vi-VN')} XU`;
             document.getElementById('order-price').textContent = p.price;
@@ -618,6 +837,7 @@
                 rememberAccount(savedId);
                 document.getElementById('login-area').classList.add('hidden');
                 showProfileCard(savedId);
+                refreshProfileInBackground(savedId);
             }
         });
 
@@ -662,31 +882,167 @@
         // ---- Đăng nhập TikTok ID ----
         let currentTikTokId = null;
 
-        function loginTikTok() {
-            const val = document.getElementById('tiktok-id-input').value.trim().replace(/^@/, '');
-            if (!val) { showToast('Vui lòng nhập ID TikTok của bạn.'); return; }
+        // Hồ sơ TikTok lưu ở trình duyệt; dùng lại trong 24h để không tốn lượt gọi TikHub
+        const PROFILE_FRESH_MS = 24 * 60 * 60 * 1000;
+        function getSavedProfile(id) {
+            try { return JSON.parse(localStorage.getItem('tiktok_profile_' + String(id).toLowerCase())); } catch { return null; }
+        }
+        function saveProfile(p) {
+            localStorage.setItem('tiktok_profile_' + p.uniqueId.toLowerCase(), JSON.stringify({ ...p, savedAt: Date.now() }));
+        }
+        const isFresh = (p) => p && Date.now() - (p.savedAt || 0) < PROFILE_FRESH_MS;
 
+        // Hỏi server (server.js → TikHub). Server giữ API key, trình duyệt không bao giờ thấy.
+        // Lỗi kèm mã: 0 = mất mạng, -1 = mở file trực tiếp, còn lại là mã HTTP từ server
+        const lookupError = (msg, status) => Object.assign(new Error(msg), { status });
+        async function lookupTikTokUser(username) {
+            if (location.protocol === 'file:') throw lookupError('Hãy chạy "npm start" rồi mở http://localhost:3000 để kiểm tra ID.', -1);
+            let res;
+            try { res = await fetch('/api/tiktok/user?username=' + encodeURIComponent(username)); }
+            catch { throw lookupError('Không kết nối được máy chủ, vui lòng thử lại.', 0); }
+            const body = await res.json().catch(() => null);
+            if (!res.ok || !body || !body.ok) throw lookupError((body && body.error) || 'Không kiểm tra được ID TikTok, vui lòng thử lại.', res.ok ? 502 : res.status);
+            return body.user;
+        }
+
+        // ---- Modal "tra không ra": lời nhắn theo từng trường hợp ----
+        const LOOKUP_VARIANTS = {
+            notfound: {
+                icon: 'fa-magnifying-glass', tone: 'bg-rose/15 ring-rose/30 text-rose shadow-[0_0_30px_rgba(254,44,85,.3)]',
+                title: (id) => `Chưa tìm thấy @${id}`,
+                desc: 'Có thể ID bị nhầm một ký tự nhỏ. Bạn xem lại giúp nhé:',
+                tips: true, primary: 'Nhập lại ID', action: 'edit', zalo: true,
+            },
+            invalid: {
+                icon: 'fa-keyboard', tone: 'bg-rose/15 ring-rose/30 text-rose shadow-[0_0_30px_rgba(254,44,85,.3)]',
+                title: () => 'ID chưa đúng định dạng',
+                desc: 'ID TikTok chỉ gồm chữ không dấu, số, dấu chấm và gạch dưới. Bạn xem lại giúp nhé:',
+                tips: true, primary: 'Nhập lại ID', action: 'edit', zalo: false,
+            },
+            busy: {
+                icon: 'fa-hourglass-half', tone: 'bg-amber-400/15 ring-amber-300/30 text-amber-300 shadow-[0_0_30px_rgba(251,191,36,.25)]',
+                title: () => 'Chờ một chút nhé',
+                desc: 'Để chống spam, mỗi phút hệ thống chỉ kiểm tra được vài ID. Bạn đợi khoảng 1 phút rồi thử lại nhé.',
+                tips: false, primary: 'Đã hiểu', action: 'close', zalo: false,
+            },
+            error: {
+                icon: 'fa-wifi', tone: 'bg-blue-500/15 ring-blue-400/30 text-[#60A5FA] shadow-[0_0_30px_rgba(59,130,246,.25)]',
+                title: () => 'Chưa kiểm tra được ID',
+                desc: 'Kết nối đang chậm hoặc hệ thống đang bảo trì, không phải lỗi của bạn. Bạn thử lại sau ít phút nhé.',
+                tips: false, primary: 'Thử lại', action: 'retry', zalo: true,
+            },
+        };
+        let lookupAction = 'close';
+
+        function showLookupModal(kind, id) {
+            const v = LOOKUP_VARIANTS[kind] || LOOKUP_VARIANTS.error;
+            const icon = document.getElementById('lookup-icon');
+            icon.className = 'w-16 h-16 mx-auto mb-4 rounded-full ring-1 flex items-center justify-center text-2xl ' + v.tone;
+            icon.firstElementChild.className = 'fa-solid ' + v.icon;
+            document.getElementById('lookup-title').textContent = v.title(String(id || '').slice(0, 30));
+            document.getElementById('lookup-desc').textContent = v.desc;
+            document.getElementById('lookup-tips').classList.toggle('hidden', !v.tips);
+            document.getElementById('lookup-zalo').classList.toggle('hidden', !v.zalo);
+            document.getElementById('lookup-primary').textContent = v.primary;
+            lookupAction = v.action;
+            openModal('lookup-modal');
+        }
+
+        function onLookupPrimary() {
+            closeModal('lookup-modal');
+            const input = document.getElementById('tiktok-id-input');
+            if (lookupAction === 'edit') setTimeout(() => { input.focus(); input.select(); }, 300);
+            else if (lookupAction === 'retry') loginTikTok();
+        }
+
+        const lookupKind = (status) => ({ 404: 'notfound', 400: 'invalid', 429: 'busy' })[status] || 'error';
+
+        async function loginTikTok() {
             const btn = document.getElementById('login-btn');
+            if (btn.disabled) return;
+            const val = document.getElementById('tiktok-id-input').value.trim().replace(/^@+/, '');
+            if (!val) { showToast('Vui lòng nhập ID TikTok của bạn.'); return; }
+            // Sai định dạng thì báo ngay, khỏi hỏi server (dán link hồ sơ TikTok vẫn được)
+            if (!/tiktok\.com\/@/i.test(val) && !/^[A-Za-z0-9._]{2,24}$/.test(val)) { showLookupModal('invalid', val); return; }
+
             const btnText = document.getElementById('login-btn-text');
             btn.disabled = true;
             btn.style.opacity = '0.8';
             btnText.innerHTML = '<svg class="animate-spin" style="width:14px;height:14px;display:inline-block;vertical-align:middle;" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path></svg> Đang kiểm tra...';
 
-            setTimeout(() => {
+            try {
+                const cached = getSavedProfile(val);
+                const profile = isFresh(cached) ? cached : await lookupTikTokUser(val);
+                if (profile !== cached) saveProfile(profile);
+                const id = profile.uniqueId;
+                currentTikTokId = id;
+                localStorage.setItem('tiktok_logged_id', id);
+                rememberAccount(id);
+                document.getElementById('login-area').classList.add('hidden');
+                showProfileCard(id);
+            } catch (e) {
+                const shownId = (val.match(/tiktok\.com\/@([^/?#\s]+)/i) || [, val])[1];
+                if (typeof e.status === 'number' && e.status >= 0) showLookupModal(lookupKind(e.status), shownId);
+                else showToast(e.message);
+            } finally {
                 btn.disabled = false;
                 btn.style.opacity = '1';
                 btnText.textContent = 'Đăng nhập';
-                currentTikTokId = val;
-                localStorage.setItem('tiktok_logged_id', val);
-                rememberAccount(val);
-                document.getElementById('login-area').classList.add('hidden');
-                showProfileCard(val);
-            }, 1300);
+            }
         }
 
-        function showProfileCard(id) {
+        // Mở lại trang: hồ sơ cũ hơn 24h thì cập nhật ngầm (avatar TikTok có hạn dùng)
+        async function refreshProfileInBackground(id) {
+            if (isFresh(getSavedProfile(id))) return;
+            try {
+                const profile = await lookupTikTokUser(id);
+                saveProfile(profile);
+                if (currentTikTokId && currentTikTokId.toLowerCase() === profile.uniqueId.toLowerCase()) showProfileCard(currentTikTokId, false);
+            } catch { /* giữ thông tin cũ */ }
+        }
+
+        // Avatar: hiện chữ cái đầu trước, ảnh tải xong mới thay vào (ảnh lỗi thì giữ chữ)
+        function renderAvatar(el, id, profile, imgClass) {
+            el.textContent = String(id || '?').charAt(0).toUpperCase();
+            if (!profile || !profile.avatar) return;
+            const img = new Image();
+            img.referrerPolicy = 'no-referrer';
+            img.alt = '';
+            img.className = imgClass;
+            img.onload = () => { el.textContent = ''; el.appendChild(img); };
+            img.src = profile.avatar;
+        }
+
+        const fmtCount = (n) => new Intl.NumberFormat('en', { notation: 'compact', maximumFractionDigits: 1 }).format(n);
+
+        function showProfileCard(id, scroll = true) {
             const card = document.getElementById('profile-card');
+            const profile = getSavedProfile(id);
+            document.getElementById('profile-nickname').textContent = (profile && profile.nickname) || '@' + id;
             document.getElementById('profile-name').textContent = '@' + id;
+            document.getElementById('profile-verified').classList.toggle('hidden', !(profile && profile.verified));
+            renderAvatar(document.getElementById('profile-avatar'), id, profile, 'w-full h-full object-cover');
+
+            // Số liệu kiểu trang cá nhân TikTok: số đậm ở trên, nhãn ở dưới
+            const stats = document.getElementById('profile-stats');
+            stats.textContent = '';
+            if (profile) {
+                [[profile.followerCount, 'Follower'], [profile.heartCount, 'Thích'], [profile.videoCount, 'Video']]
+                    .filter(([n]) => typeof n === 'number')
+                    .forEach(([n, label]) => {
+                        const item = document.createElement('div');
+                        item.className = 'flex-1 sm:flex-none text-center px-3 sm:px-5';
+                        const num = document.createElement('p');
+                        num.className = 'text-white font-extrabold text-[15px] sm:text-base leading-tight';
+                        num.textContent = fmtCount(n);
+                        const lbl = document.createElement('p');
+                        lbl.className = 'text-white/45 text-[11.5px] sm:text-xs';
+                        lbl.textContent = label;
+                        item.append(num, lbl);
+                        stats.append(item);
+                    });
+            }
+            stats.classList.toggle('hidden', !stats.childElementCount);
 
             // Khôi phục SĐT Zalo đã lưu (nếu có)
             const savedPhone = localStorage.getItem('zalo_' + id) || '';
@@ -696,7 +1052,7 @@
             updateZaloEditNote(id);
 
             card.classList.remove('hidden');
-            card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            if (scroll) card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
         }
 
         function updateZaloEditNote(id) {
@@ -729,7 +1085,7 @@
         }
 
         function rememberAccount(id) {
-            const list = getSavedAccounts().filter(a => a !== id);
+            const list = getSavedAccounts().filter(a => a.toLowerCase() !== id.toLowerCase());
             list.unshift(id);
             localStorage.setItem('tiktok_accounts', JSON.stringify(list.slice(0, 10)));
         }
@@ -741,8 +1097,24 @@
             dd.innerHTML = '';
             accounts.forEach(id => {
                 const li = document.createElement('li');
-                li.className = 'px-5 py-3 text-white font-semibold text-[15px] cursor-pointer hover:bg-white/10 transition truncate';
-                li.textContent = id;
+                li.className = 'flex items-center gap-3 px-3 py-2.5 rounded-xl text-white font-semibold text-[15px] cursor-pointer hover:bg-white/10 transition';
+                const profile = getSavedProfile(id);
+                const avatar = document.createElement('span');
+                avatar.className = 'w-8 h-8 rounded-full overflow-hidden brand-gradient flex-shrink-0 flex items-center justify-center text-[13px] font-black text-white';
+                renderAvatar(avatar, id, profile, 'w-full h-full object-cover');
+                const name = document.createElement('span');
+                name.className = 'min-w-0 flex flex-col leading-tight';
+                const top = document.createElement('span');
+                top.className = 'truncate';
+                top.textContent = (profile && profile.nickname) || id;
+                name.append(top);
+                if (profile && profile.nickname) {
+                    const sub = document.createElement('span');
+                    sub.className = 'truncate text-[12px] font-normal text-white/50';
+                    sub.textContent = '@' + id;
+                    name.append(sub);
+                }
+                li.append(avatar, name);
                 li.onmousedown = (e) => {
                     e.preventDefault();
                     document.getElementById('tiktok-id-input').value = id;
@@ -793,6 +1165,8 @@
         function showToast(msg) {
             const t = document.getElementById('toast');
             document.getElementById('toast-msg').textContent = msg;
+            t.classList.add('hidden');
+            t.offsetHeight; // chạy lại hiệu ứng trượt lên
             t.classList.remove('hidden');
             clearTimeout(toastTimer);
             toastTimer = setTimeout(() => t.classList.add('hidden'), 2600);
@@ -815,9 +1189,9 @@
         function buildSpinTable() {
             const el = document.getElementById('spin-prizes-table');
             el.innerHTML = SPIN_PRIZES.map(p => `
-                <div class="flex items-center justify-between gap-2 bg-gray-50 rounded-lg px-2.5 py-1 sm:px-3 sm:py-2 text-[11.5px] sm:text-[13px] leading-tight">
-                    <span class="min-w-0 flex items-start gap-1.5 ${p.lose ? 'text-red-500 font-semibold' : 'text-gray-700'}">${prizeIcon(p.label, p.lose, 'w-3 h-3 sm:w-3.5 sm:h-3.5')}<span>${p.label}</span></span>
-                    <span class="flex-shrink-0 text-[10px] sm:text-[11.5px] font-bold px-1.5 py-0.5 sm:px-2 rounded-full ${p.lose ? 'bg-red-50 text-red-500' : 'bg-gray-200 text-gray-600'}">${p.weight}%</span>
+                <div class="flex items-center justify-between gap-2 bg-white/[.04] border border-white/[.05] rounded-lg px-2.5 py-1 sm:px-3 sm:py-2 text-[11.5px] sm:text-[13px] leading-tight">
+                    <span class="min-w-0 flex items-start gap-1.5 ${p.lose ? 'text-[#FF6B85] font-semibold' : 'text-white/80'}">${prizeIcon(p.label, p.lose, 'w-3 h-3 sm:w-3.5 sm:h-3.5')}<span>${p.label}</span></span>
+                    <span class="flex-shrink-0 text-[10px] sm:text-[11.5px] font-bold px-1.5 py-0.5 sm:px-2 rounded-full ${p.lose ? 'bg-rose/15 text-[#FF8FA3]' : 'bg-white/10 text-white/70'}">${p.weight}%</span>
                 </div>`).join('');
         }
 
@@ -859,16 +1233,16 @@
             const box = document.getElementById('spin-result-box');
             if (count <= 0) {
                 box.innerHTML = `<div class="text-center">
-                    <p class="font-bold text-red-500 inline-flex items-center gap-1">${svgIcon('circle-x', 'w-4 h-4')}Bạn đã hết lượt quay!</p>
-                    <p class="text-gray-500 text-[11.5px]">Nạp thêm 5.000 Xu để nhận 1 lượt quay mới.</p></div>`;
-                box.classList.add('border-red-300', 'bg-red-50');
-                setTimeout(() => box.classList.remove('border-red-300', 'bg-red-50'), 1500);
+                    <p class="font-bold text-[#FF6B85] inline-flex items-center gap-1">${svgIcon('circle-x', 'w-4 h-4')}Bạn đã hết lượt quay!</p>
+                    <p class="text-white/50 text-[11.5px]">Nạp thêm 5.000 Xu để nhận 1 lượt quay mới.</p></div>`;
+                box.classList.add('border-rose/50', 'bg-rose/10');
+                setTimeout(() => box.classList.remove('border-rose/50', 'bg-rose/10'), 1500);
                 showToast('Bạn đã hết lượt quay!');
                 return;
             }
             btn.disabled = true;
             btn.style.opacity = '0.6';
-            box.innerHTML = svgIcon('loader', 'w-7 h-7 text-purple-500 animate-spin');
+            box.innerHTML = svgIcon('loader', 'w-7 h-7 text-purple-400 animate-spin');
 
             setTimeout(() => {
                 const prize = pickPrize();
@@ -885,11 +1259,11 @@
 
                 // Hiển thị kết quả
                 if (prize.lose) {
-                    box.innerHTML = `<div class="text-center"><div>${svgIcon('frown', 'w-7 h-7 text-red-400')}</div><p class="font-bold text-red-500">Mất lượt! Chúc may mắn lần sau.</p></div>`;
+                    box.innerHTML = `<div class="text-center"><div>${svgIcon('frown', 'w-7 h-7 text-[#FF6B85]')}</div><p class="font-bold text-[#FF6B85]">Mất lượt! Chúc may mắn lần sau.</p></div>`;
                 } else {
-                    box.innerHTML = `<div class="text-center"><div>${svgIcon('trophy', 'w-7 h-7 text-amber-500')}</div><p class="font-black text-purple-600 text-lg">Chúc mừng!</p><p class="text-gray-700">Bạn nhận được: <b class="inline-flex items-center gap-1">${prizeIcon(prize.label, false, 'w-4 h-4')}${prize.label}</b></p></div>`;
-                    box.classList.add('border-purple-300', 'bg-purple-50');
-                    setTimeout(() => box.classList.remove('border-purple-300', 'bg-purple-50'), 2000);
+                    box.innerHTML = `<div class="text-center"><div>${svgIcon('trophy', 'w-7 h-7 text-amber-400')}</div><p class="glitch font-black text-white text-lg">Chúc mừng!</p><p class="text-white/80">Bạn nhận được: <b class="inline-flex items-center gap-1 text-white">${prizeIcon(prize.label, false, 'w-4 h-4')}${prize.label}</b></p></div>`;
+                    box.classList.add('border-purple-400/60', 'bg-purple-500/10');
+                    setTimeout(() => box.classList.remove('border-purple-400/60', 'bg-purple-500/10'), 2000);
                 }
 
                 btn.disabled = false;
@@ -906,9 +1280,9 @@
             if (hist.length === 0) { wrap.classList.add('hidden'); return; }
             wrap.classList.remove('hidden');
             list.innerHTML = hist.slice(0, 3).map(h => `
-                <li class="flex items-center justify-between gap-2 bg-gray-50 rounded-lg px-3 py-1.5">
-                    <span class="inline-flex items-center gap-1.5 ${h.lose ? 'text-red-500' : 'text-gray-700'}">${prizeIcon(h.result, h.lose)}${h.result}</span>
-                    <span class="text-xs text-gray-400">${h.time}</span>
+                <li class="flex items-center justify-between gap-2 bg-white/[.04] border border-white/[.05] rounded-lg px-3 py-1.5">
+                    <span class="inline-flex items-center gap-1.5 ${h.lose ? 'text-[#FF6B85]' : 'text-white/80'}">${prizeIcon(h.result, h.lose)}${h.result}</span>
+                    <span class="text-xs text-white/40">${h.time}</span>
                 </li>`).join('');
         }
 
@@ -919,12 +1293,12 @@
                 ? JSON.parse(localStorage.getItem('spin_history_' + currentTikTokId) || '[]').filter(h => !h.lose)
                 : [];
             if (hist.length === 0) {
-                body.innerHTML = '<p class="text-center text-gray-500 text-[16px]">Bạn chưa có lịch sử trúng thưởng nào.</p>';
+                body.innerHTML = '<p class="text-center text-white/50 text-[16px]">Bạn chưa có lịch sử trúng thưởng nào.</p>';
             } else {
                 body.innerHTML = '<ul class="space-y-2">' + hist.map(h => `
-                    <li class="flex items-center justify-between bg-gray-50 rounded-lg px-4 py-2.5 text-sm">
-                        <span class="inline-flex items-center gap-1.5 text-gray-800 font-medium">${prizeIcon(h.result, false, 'w-4 h-4')}${h.result}</span>
-                        <span class="text-xs text-gray-400">${h.time}</span>
+                    <li class="flex items-center justify-between bg-white/[.04] border border-white/[.06] rounded-xl px-4 py-2.5 text-sm">
+                        <span class="inline-flex items-center gap-1.5 text-white/90 font-medium">${prizeIcon(h.result, false, 'w-4 h-4')}${h.result}</span>
+                        <span class="text-xs text-white/40">${h.time}</span>
                     </li>`).join('') + '</ul>';
             }
             openModal('win-history-modal');
