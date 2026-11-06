@@ -858,15 +858,16 @@
                     </span>
                     <div>
                         <p class="text-base lg:text-lg font-extrabold text-white tracking-tight leading-tight">Tùy chỉnh</p>
-                        <p class="text-xs text-cyan/90 font-medium">1.000 - 2.000.000 Xu</p>
+                        <p class="text-xs text-cyan/90 font-medium">200 - 2.000.000 Xu</p>
                     </div>
                 </div>
                 <div class="w-full sm:w-auto sm:flex-1 sm:max-w-sm sm:ml-auto">
-                    <input id="custom-xu-input" type="number" min="1000" max="2000000" step="1000"
-                        placeholder="Nhập số Xu, từ 1.000 - 2.000.000"
+                    <input id="custom-xu-input" type="number" min="200" max="2000000" step="1"
+                        placeholder="Nhập số Xu, từ 200 - 2.000.000"
                         class="w-full bg-black/40 border border-white/10 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-rose/70 focus:shadow-[0_0_0_4px_rgba(254,44,85,.15)] text-white placeholder:text-white/30 transition"
                         onclick="event.stopPropagation()"
                         oninput="onCustomInput(this.value)">
+                    <p id="custom-xu-error" class="hidden mt-1.5 text-xs font-medium text-[#FF6B85]"><i class="fa-solid fa-circle-exclamation mr-1"></i>Vui lòng nhập từ 200 - 2.000.000 Xu</p>
                 </div>
             </div>
             ${CHECK_BADGE.replace('bottom-3 right-3', 'top-[calc(50%-10px)] right-4')}
@@ -885,11 +886,16 @@
             input.focus();
         }
 
+        const CUSTOM_MIN = 200, CUSTOM_MAX = 2000000;
+        const isValidCustomXu = (xu) => xu >= CUSTOM_MIN && xu <= CUSTOM_MAX;
+
         function onCustomInput(val) {
             selected = 'custom';
             markSelected(document.getElementById('custom-card'));
             const xu = parseInt(val);
-            if (!xu || xu < 1000) {
+            const valid = isValidCustomXu(xu);
+            document.getElementById('custom-xu-error').classList.toggle('hidden', valid || val === '');
+            if (!valid) {
                 document.getElementById('order-xu').textContent = '—';
                 document.getElementById('order-price').textContent = '—';
                 return;
@@ -904,6 +910,7 @@
             selected = i;
             markSelected(el);
             document.getElementById('custom-xu-input').value = '';
+            document.getElementById('custom-xu-error').classList.add('hidden');
             const p = packages[i];
             document.getElementById('order-xu').textContent = `${p.xu.toLocaleString('vi-VN')} XU`;
             document.getElementById('order-price').textContent = p.price;
@@ -930,7 +937,11 @@
 
             if (selected === 'custom') {
                 const val = parseInt(document.getElementById('custom-xu-input').value);
-                if (!val || val < 1000) { showToast('Nhập số Xu từ 1.000 trở lên.'); return; }
+                if (!isValidCustomXu(val)) {
+                    document.getElementById('custom-xu-error').classList.remove('hidden');
+                    showToast('Vui lòng nhập từ 200 - 2.000.000 Xu.');
+                    return;
+                }
                 openPaymentModal(Math.round(val * 259).toLocaleString('vi-VN') + ' đ');
                 return;
             }
