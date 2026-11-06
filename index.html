@@ -812,6 +812,7 @@
 
         // ---- Data ----
         const packages = [
+            { xu: 200,   price: '50.000 đ',    popular: false },
             { xu: 1000,  price: '261.000 đ',   popular: false },
             { xu: 2000,  price: '520.000 đ',   popular: false },
             { xu: 3000,  price: '779.000 đ',   popular: false },
@@ -846,25 +847,29 @@
 
         // Thêm ô Tùy chỉnh
         const custom = document.createElement('div');
-        custom.className = 'pkg pop text-left p-4';
+        custom.className = 'pkg pop col-span-2 md:col-span-4 text-left p-4';
         custom.style.animationDelay = (packages.length * 45) + 'ms';
         custom.id = 'custom-card';
         custom.innerHTML = `
-            <div class="flex items-center gap-2.5 mb-2">
-                <span class="inline-flex flex-shrink-0 items-center justify-center w-8 h-8 rounded-full text-[#062A2A] shadow-[0_4px_14px_rgba(37,244,238,.35)]" style="background:linear-gradient(135deg,#25F4EE,#00bcd4);">
-                    <i class="fa-solid fa-sliders text-[12px]"></i>
-                </span>
-                <span class="text-base lg:text-lg font-extrabold text-white tracking-tight">Tùy chỉnh</span>
+            <div class="flex flex-wrap items-center gap-x-4 gap-y-3 pr-8">
+                <div class="flex items-center gap-2.5 flex-shrink-0">
+                    <span class="inline-flex flex-shrink-0 items-center justify-center w-9 h-9 rounded-full text-[#062A2A] shadow-[0_4px_14px_rgba(37,244,238,.35)]" style="background:linear-gradient(135deg,#25F4EE,#00bcd4);">
+                        <i class="fa-solid fa-sliders text-[13px]"></i>
+                    </span>
+                    <div>
+                        <p class="text-base lg:text-lg font-extrabold text-white tracking-tight leading-tight">Tùy chỉnh</p>
+                        <p class="text-xs text-cyan/90 font-medium">1.000 - 2.000.000 Xu</p>
+                    </div>
+                </div>
+                <div class="w-full sm:w-auto sm:flex-1 sm:max-w-sm sm:ml-auto">
+                    <input id="custom-xu-input" type="number" min="1000" max="2000000" step="1000"
+                        placeholder="Nhập số Xu, từ 1.000 - 2.000.000"
+                        class="w-full bg-black/40 border border-white/10 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-rose/70 focus:shadow-[0_0_0_4px_rgba(254,44,85,.15)] text-white placeholder:text-white/30 transition"
+                        onclick="event.stopPropagation()"
+                        oninput="onCustomInput(this.value)">
+                </div>
             </div>
-            <p class="text-xs text-cyan/90 font-medium">1.000 - 2.000.000 Xu</p>
-            <div id="custom-input-wrap" class="hidden mt-3">
-                <input id="custom-xu-input" type="number" min="1000" max="2000000" step="1000"
-                    placeholder="Từ 1.000 - 2.000.000"
-                    class="w-full bg-black/40 border border-white/10 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-rose/70 focus:shadow-[0_0_0_4px_rgba(254,44,85,.15)] text-white placeholder:text-white/30 transition"
-                    onclick="event.stopPropagation()"
-                    oninput="onCustomInput(this.value)">
-            </div>
-            ${CHECK_BADGE.replace('bottom-3 right-3', 'top-3 right-3')}
+            ${CHECK_BADGE.replace('bottom-3 right-3', 'top-[calc(50%-10px)] right-4')}
         `;
         custom.onclick = () => selectCustom();
         grid.appendChild(custom);
@@ -875,23 +880,20 @@
         }
 
         function selectCustom() {
-            selected = 'custom';
-            markSelected(document.getElementById('custom-card'));
-            document.getElementById('custom-input-wrap').classList.remove('hidden');
-            const val = document.getElementById('custom-xu-input').value;
-            if (val) onCustomInput(val);
-            else {
-                document.getElementById('order-xu').textContent = '—';
-                document.getElementById('order-price').textContent = '—';
-            }
-            setTimeout(() => document.getElementById('custom-xu-input').focus(), 50);
+            const input = document.getElementById('custom-xu-input');
+            onCustomInput(input.value);
+            input.focus();
         }
 
         function onCustomInput(val) {
-            const xu = parseInt(val);
-            if (!xu || xu < 1000) return;
             selected = 'custom';
             markSelected(document.getElementById('custom-card'));
+            const xu = parseInt(val);
+            if (!xu || xu < 1000) {
+                document.getElementById('order-xu').textContent = '—';
+                document.getElementById('order-price').textContent = '—';
+                return;
+            }
             // Giá tạm tính: ~259đ/xu
             const price = Math.round(xu * 259);
             document.getElementById('order-xu').textContent = `${xu.toLocaleString('vi-VN')} XU`;
@@ -901,7 +903,7 @@
         function selectPackage(i, el) {
             selected = i;
             markSelected(el);
-            document.getElementById('custom-input-wrap').classList.add('hidden');
+            document.getElementById('custom-xu-input').value = '';
             const p = packages[i];
             document.getElementById('order-xu').textContent = `${p.xu.toLocaleString('vi-VN')} XU`;
             document.getElementById('order-price').textContent = p.price;
