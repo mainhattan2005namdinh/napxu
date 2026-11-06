@@ -226,64 +226,70 @@
 
     <!-- Notice Modal -->
     <div id="notice-modal" class="modal" onclick="if(event.target===this) closeNoticeModal()">
-        <div class="modal-panel bg-white max-w-lg sm:max-w-2xl [@media(min-width:640px)_and_(max-height:520px)]:max-w-4xl shadow-xl">
+        <div class="modal-panel bg-white max-w-[640px] shadow-xl">
 
             <!-- Header -->
-            <div class="flex items-center gap-3 px-4 sm:px-5 pt-3.5 pb-2.5">
-                <div class="w-8 h-8 rounded-full bg-red-100 flex items-center justify-center flex-shrink-0">
-                    <i class="fa-solid fa-triangle-exclamation text-red-500 text-sm"></i>
+            <div class="flex items-center gap-3 px-5 sm:px-7 pt-5 pb-4 border-b border-gray-200">
+                <div class="w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-red-50 flex items-center justify-center flex-shrink-0">
+                    <i class="fa-solid fa-triangle-exclamation text-[#FE2C55] text-base sm:text-lg"></i>
                 </div>
                 <div class="flex-1 min-w-0">
-                    <p class="font-black text-[12.5px] sm:text-sm uppercase text-gray-900">MỘT SỐ LƯU Ý KHI SỬ DỤNG DỊCH VỤ</p>
-                    <p class="text-[11.5px] sm:text-xs text-gray-500 [@media(max-height:700px)]:hidden">Vui lòng đọc kỹ trước khi thực hiện giao dịch</p>
+                    <p class="font-black text-[15px] sm:text-lg uppercase text-gray-900 leading-tight">MỘT SỐ LƯU Ý KHI SỬ DỤNG DỊCH VỤ</p>
+                    <p class="text-xs sm:text-sm text-gray-500 mt-0.5">Vui lòng đọc kỹ trước khi thực hiện giao dịch</p>
                 </div>
-                <button onclick="closeNoticeModal()" class="w-8 h-8 flex items-center justify-center rounded-full text-gray-400 hover:bg-gray-100 hover:text-gray-600 text-2xl leading-none flex-shrink-0">&times;</button>
+                <button onclick="closeNoticeModal()" class="self-start w-8 h-8 -mr-2 -mt-1 flex items-center justify-center rounded-full text-gray-400 hover:bg-gray-100 hover:text-gray-600 text-2xl leading-none flex-shrink-0">&times;</button>
             </div>
 
-            <div class="px-4 sm:px-5 pb-4 grid grid-cols-1 sm:grid-cols-2 gap-2 text-[12.5px] sm:text-[13.5px] leading-snug sm:leading-normal [@media(min-height:701px)]:text-[13.5px]">
+            <div class="px-5 sm:px-7 pt-5 flex flex-col gap-4 text-[13px] sm:text-sm leading-relaxed">
 
-                <div class="rounded-xl px-3 py-2.5 sm:p-3.5 border bg-[#FFFBEB] border-[#FDE68A] text-yellow-900">
-                    Để hạn chế lỗi khi nạp xu và tăng giới hạn nạp, quý khách vui lòng xác minh danh tính TikTok trước khi thực hiện giao dịch.
-                    <b>Link xác minh danh tính:
-                        <a href="https://www.tiktok.com/kyc" target="_blank" rel="noopener" class="underline break-all">https://www.tiktok.com/kyc</a></b>
+                <div class="rounded-2xl px-4 py-3.5 border bg-[#FFFBEB] border-[#FDE68A] text-[#78350F]">
+                    <p>Để hạn chế lỗi khi nạp xu và tăng giới hạn nạp, quý khách vui lòng <b>xác minh danh tính TikTok</b> trước khi thực hiện giao dịch.</p>
+                    <a href="https://www.tiktok.com/kyc" target="_blank" rel="noopener"
+                        class="mt-2.5 inline-flex items-center gap-2 max-w-full px-4 py-1.5 rounded-xl bg-[#FE2C55] text-white font-bold text-[12.5px] sm:text-[13.5px] transition hover:opacity-90 break-all">
+                        <i class="fa-solid fa-link"></i> Link xác minh danh tính: https://www.tiktok.com/kyc
+                    </a>
                 </div>
 
-                <div class="rounded-xl px-3 py-2.5 sm:p-3.5 border border-gray-200 bg-gray-50 text-gray-700">
-                    Một số tài khoản bị hủy giao dịch có thể do TikTok giới hạn số lượng xu nạp trong ngày hoặc chặn đầu thẻ trên hệ thống. Trường hợp này, quý khách vui lòng giảm số lượng xu nạp mỗi lần hoặc đổi máy chủ rồi thử lại.
+                <div class="rounded-2xl px-4 py-3.5 border border-gray-200 bg-gray-50 text-gray-600">
+                    Một số tài khoản bị hủy giao dịch có thể do <b class="text-gray-800">TikTok giới hạn số lượng xu nạp trong ngày</b> hoặc chặn đầu thẻ trên hệ thống. Trường hợp này, quý khách vui lòng giảm số lượng xu nạp mỗi lần hoặc đổi máy chủ rồi thử lại.
                 </div>
 
-                <div class="rounded-xl px-3 py-2.5 sm:p-3.5 border bg-[#FFF5F5] border-[#FECACA] text-red-700">
-                    Nếu bị hoàn tiền liên tục khi tạo đơn vui lòng không SPAM tạo đơn mới việc này có thể dẫn đến việc bị chặn nạp xu, hãy nhắn tin cho Admin tại mục liên hệ hỗ trợ để kiểm tra và xử lý.
+                <div class="rounded-2xl px-4 py-3.5 border bg-[#FFF5F5] border-[#FECACA] text-[#B91C1C]">
+                    Nếu bị hoàn tiền liên tục khi tạo đơn vui lòng <b class="text-[#7F1D1D]">không SPAM tạo đơn mới</b> việc này có thể dẫn đến việc bị chặn nạp xu, hãy nhắn tin cho Admin tại mục liên hệ hỗ trợ để kiểm tra và xử lý.
                 </div>
 
-                <div class="rounded-xl px-3 py-2.5 sm:p-3.5 flex items-center justify-between gap-3 border bg-[#EFF6FF] border-[#BFDBFE]">
+                <div class="rounded-2xl px-4 py-3.5 flex items-center justify-between gap-3 border bg-[#EFF6FF] border-[#BFDBFE]">
                     <div class="min-w-0">
-                        <p class="font-semibold text-gray-700">Liên hệ hỗ trợ qua Zalo:</p>
-                        <p class="text-base font-black text-blue-600">0568441367</p>
+                        <p class="font-bold text-[#1E3A8A]">Liên hệ hỗ trợ qua Zalo:</p>
+                        <p class="text-base sm:text-lg font-black text-[#1D4ED8]">0568441367</p>
                     </div>
                     <a href="https://zalo.me" target="_blank" rel="noopener"
-                        class="flex-shrink-0 inline-flex items-center gap-2 text-white font-bold px-3.5 py-2 rounded-lg transition hover:opacity-90 bg-[#0068FF]">
+                        class="flex-shrink-0 inline-flex items-center gap-2 text-white font-bold px-4 py-2 rounded-xl transition hover:opacity-90 bg-[#2563EB]">
                         <i class="fa-solid fa-comment-dots"></i> Chat Zalo
                     </a>
                 </div>
 
-                <p class="sm:col-span-2 text-center text-gray-600 font-semibold [@media(max-height:520px)]:hidden">Xin cảm ơn quý khách đã sử dụng dịch vụ.</p>
+                <p class="text-center text-gray-800 font-bold py-2">Xin cảm ơn quý khách đã sử dụng dịch vụ.</p>
+            </div>
 
-                <button onclick="closeNoticeModal()"
-                    class="sm:col-span-2 w-full text-white font-bold py-2.5 sm:py-3 rounded-xl text-[15px] transition hover:opacity-90 bg-[#FE2C55]">
-                    Đã hiểu &amp; Đóng
-                </button>
+            <div class="px-5 sm:px-7 pt-4 pb-5 sm:pb-6">
+                <div class="border-t border-gray-200 pt-4">
+                    <button onclick="closeNoticeModal()"
+                        class="w-full text-white font-bold py-3 rounded-xl text-[15px] transition hover:opacity-90 bg-[#FE2C55]">
+                        Đã hiểu &amp; Đóng
+                    </button>
+                </div>
             </div>
         </div>
     </div>
 
     <!-- Lucky Spin Modal -->
     <div id="spin-modal" class="modal" onclick="if(event.target===this) closeSpinModal()">
-        <div class="modal-panel bg-white max-w-[420px] shadow-2xl">
+        <div class="modal-panel bg-white max-w-[420px] sm:max-w-[600px] shadow-2xl">
             <!-- Header -->
-            <div class="relative px-10 py-2.5 text-center border-b border-gray-100">
-                <button onclick="closeSpinModal()" class="absolute right-3 top-1/2 -translate-y-1/2 w-8 h-8 flex items-center justify-center rounded-full text-gray-400 hover:bg-gray-100 hover:text-gray-700 text-2xl leading-none">&times;</button>
-                <h3 class="text-lg font-black inline-flex items-center gap-2"><span data-icon="gift" class="w-5 h-5 text-[#FE2C55]"></span>Vòng Quay May Mắn</h3>
+            <div class="relative px-10 py-2.5 sm:py-4 text-center border-b border-gray-100">
+                <button onclick="closeSpinModal()" class="absolute right-3 sm:right-4 top-1/2 -translate-y-1/2 w-8 h-8 flex items-center justify-center rounded-full text-gray-400 hover:bg-gray-100 hover:text-gray-700 text-2xl leading-none">&times;</button>
+                <h3 class="text-lg sm:text-2xl font-black inline-flex items-center gap-2"><span data-icon="gift" class="w-5 h-5 sm:w-6 sm:h-6 text-[#FE2C55]"></span>Vòng Quay May Mắn</h3>
             </div>
 
             <!-- Chưa đăng nhập -->
@@ -300,31 +306,31 @@
             </div>
 
             <!-- Đã đăng nhập -->
-            <div id="spin-content" class="hidden px-4 py-3">
+            <div id="spin-content" class="hidden px-4 py-3 sm:px-6 sm:py-5">
                 <!-- Điều kiện -->
-                <div class="rounded-xl px-3 py-2 mb-2 text-[12px] leading-snug bg-[#F5F0FF] border border-[#E0D0FF]">
-                    <p class="text-gray-700 mb-0.5"><span data-icon="target" class="w-3.5 h-3.5 text-purple-600 mr-1"></span><b>Điều kiện nhận lượt quay:</b> Mỗi <b class="text-purple-600">5.000 Xu</b> nạp thành công sẽ nhận ngay <b class="text-purple-600">1 lượt quay</b>.</p>
-                    <p class="text-gray-700"><span data-icon="ticket" class="w-3.5 h-3.5 text-purple-600 mr-1"></span>Số lượt quay hiện có của bạn: <b id="spin-count" class="text-purple-600">0 lượt</b></p>
+                <div class="rounded-xl px-3 py-2 sm:px-4 sm:py-3 mb-2 sm:mb-3 text-[12px] sm:text-sm leading-snug sm:leading-relaxed bg-[#F5F0FF] border border-[#E0D0FF]">
+                    <p class="text-gray-700 mb-0.5"><span data-icon="target" class="w-3.5 h-3.5 sm:w-4 sm:h-4 text-purple-600 mr-1"></span><b>Điều kiện nhận lượt quay:</b> Mỗi <b class="text-purple-600">5.000 Xu</b> nạp thành công sẽ nhận ngay <b class="text-purple-600">1 lượt quay</b>.</p>
+                    <p class="text-gray-700"><span data-icon="ticket" class="w-3.5 h-3.5 sm:w-4 sm:h-4 text-purple-600 mr-1"></span>Số lượt quay hiện có của bạn: <b id="spin-count" class="text-purple-600">0 lượt</b></p>
                 </div>
 
                 <!-- Kết quả / placeholder -->
-                <div id="spin-result-box" class="border-2 border-dashed border-gray-200 rounded-xl px-3 py-2 mb-2 min-h-[52px] flex items-center justify-center transition-colors text-[12.5px]">
+                <div id="spin-result-box" class="border-2 border-dashed border-gray-200 rounded-xl px-3 py-2 mb-2 sm:mb-3 min-h-[52px] sm:min-h-[72px] flex items-center justify-center transition-colors text-[12.5px] sm:text-[15px]">
                     <p class="text-gray-400 text-center">Bấm nút quay để xem vận may như thế nào ^^</p>
                 </div>
 
                 <!-- Nút quay -->
                 <button id="spin-btn" onclick="doSpin()"
-                    class="w-full text-white font-black py-2.5 rounded-xl text-[15px] tracking-widest shadow-lg transition hover:opacity-90 mb-3"
+                    class="w-full text-white font-black py-2.5 sm:py-3.5 rounded-xl text-[15px] sm:text-lg tracking-widest shadow-lg transition hover:opacity-90 mb-3 sm:mb-4"
                     style="background:linear-gradient(135deg,#9B59B6 0%,#FE2C55 100%);">
                     QUAY NGAY
                 </button>
 
                 <!-- Bảng tỉ lệ -->
-                <p class="text-[12px] font-bold mb-1.5 flex items-center gap-2">
+                <p class="text-[12px] sm:text-sm font-bold mb-1.5 sm:mb-2 flex items-center gap-2">
                     <span class="inline-block w-2 h-2 rounded-full bg-[#FE2C55]"></span>
                     Bảng tỷ lệ % trúng thưởng công khai:
                 </p>
-                <div class="grid grid-cols-2 gap-1" id="spin-prizes-table"></div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-1 sm:gap-1.5" id="spin-prizes-table"></div>
 
                 <!-- Lịch sử -->
                 <div class="[@media(max-height:719px)]:hidden">
@@ -809,9 +815,9 @@
         function buildSpinTable() {
             const el = document.getElementById('spin-prizes-table');
             el.innerHTML = SPIN_PRIZES.map(p => `
-                <div class="flex items-center justify-between gap-1 bg-gray-50 rounded-lg px-2 py-1 text-[11px] leading-tight">
-                    <span class="min-w-0 flex items-start gap-1 ${p.lose ? 'text-red-500 font-semibold' : 'text-gray-700'}">${prizeIcon(p.label, p.lose, 'w-3 h-3')}<span>${p.label}</span></span>
-                    <span class="flex-shrink-0 text-[10px] font-bold px-1.5 py-0.5 rounded-full ${p.lose ? 'bg-red-50 text-red-500' : 'bg-gray-200 text-gray-600'}">${p.weight}%</span>
+                <div class="flex items-center justify-between gap-2 bg-gray-50 rounded-lg px-2.5 py-1 sm:px-3 sm:py-2 text-[11.5px] sm:text-[13px] leading-tight">
+                    <span class="min-w-0 flex items-start gap-1.5 ${p.lose ? 'text-red-500 font-semibold' : 'text-gray-700'}">${prizeIcon(p.label, p.lose, 'w-3 h-3 sm:w-3.5 sm:h-3.5')}<span>${p.label}</span></span>
+                    <span class="flex-shrink-0 text-[10px] sm:text-[11.5px] font-bold px-1.5 py-0.5 sm:px-2 rounded-full ${p.lose ? 'bg-red-50 text-red-500' : 'bg-gray-200 text-gray-600'}">${p.weight}%</span>
                 </div>`).join('');
         }
 
